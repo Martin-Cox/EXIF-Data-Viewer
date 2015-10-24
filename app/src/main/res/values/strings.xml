@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Detailed Photo Viewer</string>
+    <string name="action_settings">Settings</string>
+    <string name="menu_header_details">Details</string>
+    <string name="menu_header_map">Map</string>
+
+    <!--Photo tab-->
+    <string name="photo_viewer_desc">Please select a photo!</string>
+
+    <!--Photo selector-->
+    <string name="photo_selector">Select a photo</string>
+    <string name="photo_selector_error_text">There was an error loading the image, please try again</string>
+</resources>

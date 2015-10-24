@@ -1,0 +1,23 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.martinstephencox.photodetails.DetailsFragment">
+
+    <!-- The error message should always be behind the image -->
+
+    <TextView android:layout_width="wrap_content" android:layout_height="51dp"
+        android:text="@string/photo_viewer_desc"
+        android:layout_gravity="center_horizontal|top"
+        style="@style/font_error"
+        android:layout_marginTop="20dp"/>
+
+    <ImageView
+        android:id="@+id/photo1"
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/photo_viewer_desc"
+        android:adjustViewBounds="true"
+        android:layout_gravity="center_horizontal|top" />
+
+</FrameLayout>
