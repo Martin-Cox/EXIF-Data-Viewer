@@ -1,9 +1,16 @@
 package com.martinstephencox.photodetails;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.drawable.Icon;
+import android.media.ExifInterface;
 import android.net.Uri;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -27,6 +34,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
+import java.lang.reflect.Method;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -86,20 +94,60 @@ public class MainActivity extends AppCompatActivity {
             //Successfully selected an image, load it into ImageView using Glide
             ImageView imageView = (ImageView) findViewById(R.id.photo1);
             imageView.setVisibility(View.VISIBLE);
-            Glide.with(MainActivity.this).load(data.getData()).centerCrop().into(imageView);
+            try {
+                Glide.with(MainActivity.this).load(data.getData()).centerCrop().into(imageView);
+                String exifPath = getRealPathFromURI(this.getApplicationContext(), data.getData());
+                ExifInterface exif = new ExifInterface(exifPath);
+                String datetime = exif.getAttribute(ExifInterface.TAG_DATETIME);
+                String width = exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
+                String length = exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH);
+            } catch (Exception e) {
+                createErrorDialog(android.R.string.dialog_alert_title, R.string.photo_selector_error_text);
+            }
         } else {
             //Couldn't load the image, display an error message
-            new AlertDialog.Builder(MainActivity.this)
-                    .setTitle(android.R.string.dialog_alert_title)
-                    .setMessage(R.string.photo_selector_error_text)
-                    .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // do nothing
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
+            createErrorDialog(android.R.string.dialog_alert_title, R.string.photo_selector_error_text);
         }
+    }
+
+    public void createErrorDialog(int title, int message) {
+    //Couldn't load the image, display an error message
+    new AlertDialog.Builder(MainActivity.this)
+            .setTitle(title)
+            .setMessage(message)
+            .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // do nothing
+                }
+            })
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .show();
+    }
+
+
+    public static String getRealPathFromURI(Context context, Uri uri){
+        // Taken from http://hmkcode.com/android-display-selected-image-and-its-real-path/
+        String filePath = "";
+        String wholeID = DocumentsContract.getDocumentId(uri);
+
+        // Split at colon, use second item in the array
+        String id = wholeID.split(":")[1];
+
+        String[] column = { MediaStore.Images.Media.DATA };
+
+        // where id is equal to
+        String sel = MediaStore.Images.Media._ID + "=?";
+
+        Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                column, sel, new String[]{id}, null);
+
+        int columnIndex = cursor.getColumnIndex(column[0]);
+
+        if (cursor.moveToFirst()) {
+            filePath = cursor.getString(columnIndex);
+        }
+        cursor.close();
+        return filePath;
     }
 
     @Override
