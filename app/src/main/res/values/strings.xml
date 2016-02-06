@@ -10,4 +10,11 @@
     <!--Photo selector-->
     <string name="photo_selector">Select a photo</string>
     <string name="photo_selector_error_text">There was an error loading the image, please try again</string>
+
+    <!--EXIF details labels-->
+    <string name="EXIF_width">Width: </string>
+    <string name="EXIF_height">Height: </string>
+
+    <!--EXIF details values-->
+    <string name="EXIF_value_unknown">Unknown</string>
 </resources>

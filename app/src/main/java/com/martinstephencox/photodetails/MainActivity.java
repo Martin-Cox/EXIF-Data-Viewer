@@ -99,8 +99,12 @@ public class MainActivity extends AppCompatActivity {
                 String exifPath = getRealPathFromURI(this.getApplicationContext(), data.getData());
                 ExifInterface exif = new ExifInterface(exifPath);
                 String datetime = exif.getAttribute(ExifInterface.TAG_DATETIME);
-                String width = exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
-                String length = exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH);
+                //String width = exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
+                //String length = exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH);
+                TextView width = (TextView) findViewById(R.id.image_width);
+                width.setText(exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH));
+                TextView height = (TextView) findViewById(R.id.image_height);
+                height.setText(exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH));
             } catch (Exception e) {
                 createErrorDialog(android.R.string.dialog_alert_title, R.string.photo_selector_error_text);
             }
