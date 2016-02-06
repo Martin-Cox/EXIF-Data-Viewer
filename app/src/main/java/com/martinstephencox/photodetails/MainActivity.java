@@ -92,19 +92,32 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             //Successfully selected an image, load it into ImageView using Glide
-            ImageView imageView = (ImageView) findViewById(R.id.photo1);
+            ImageView imageView = (ImageView) findViewById(R.id.photo);
             imageView.setVisibility(View.VISIBLE);
+            TextView selectPhoto = (TextView) findViewById(R.id.select_photo);
+            selectPhoto.setVisibility(View.INVISIBLE);
             try {
                 Glide.with(MainActivity.this).load(data.getData()).centerCrop().into(imageView);
                 String exifPath = getRealPathFromURI(this.getApplicationContext(), data.getData());
                 ExifInterface exif = new ExifInterface(exifPath);
-                String datetime = exif.getAttribute(ExifInterface.TAG_DATETIME);
-                //String width = exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
-                //String length = exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH);
+
+                //Getting all the Exif attributes
                 TextView width = (TextView) findViewById(R.id.image_width);
                 width.setText(exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH));
                 TextView height = (TextView) findViewById(R.id.image_height);
                 height.setText(exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH));
+                TextView sizeBytes = (TextView) findViewById(R.id.image_size_bytes);
+                sizeBytes.setText(exif.getAttribute(ExifInterface.TAG_DATETIME_DIGITIZED));   //CAN'T GET WITH EXIFINTERFACE
+                TextView datestamp = (TextView) findViewById(R.id.image_date_taken);
+                datestamp.setText(exif.getAttribute(ExifInterface.TAG_DATETIME));
+                TextView camera = (TextView) findViewById(R.id.image_camera);
+                camera.setText(exif.getAttribute(ExifInterface.TAG_MAKE));
+                TextView lens = (TextView) findViewById(R.id.image_lens);
+                lens.setText(exif.getAttribute(ExifInterface.TAG_APERTURE));
+                TextView exposure = (TextView) findViewById(R.id.image_exposure);
+                exposure.setText(exif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME));
+                TextView flash = (TextView) findViewById(R.id.image_flash);
+                flash.setText(exif.getAttribute(ExifInterface.TAG_FLASH));
             } catch (Exception e) {
                 createErrorDialog(android.R.string.dialog_alert_title, R.string.photo_selector_error_text);
             }

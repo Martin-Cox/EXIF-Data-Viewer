@@ -4,86 +4,280 @@
     tools:context="com.martinstephencox.photodetails.DetailsFragment">
 
     <!-- The error message should always be behind the image -->
-
     <TextView android:layout_width="wrap_content" android:layout_height="51dp"
         android:text="@string/photo_viewer_desc"
+        android:id="@+id/select_photo"
         android:layout_gravity="center_horizontal|top"
         style="@style/font_error"
         android:layout_marginTop="20dp"/>
 
-    <ImageView
-        android:id="@+id/photo1"
-        android:layout_width="fill_parent"
-        android:layout_height="200dp"
-        android:scaleType="fitCenter"
-        android:contentDescription="@string/photo_viewer_desc"
-        android:adjustViewBounds="true"
-        android:layout_gravity="center_horizontal|top" />
-
     <ScrollView
-        android:layout_width="365dp"
-        android:layout_height="309dp"
-        android:id="@+id/scrollView"
-        android:layout_gravity="center_horizontal|bottom"
-        android:fillViewport="false">
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/scrollDetailsPage"
+        android:layout_gravity="center_horizontal|"
+        android:fillViewport="true"
+        android:scrollbarAlwaysDrawVerticalTrack="true">
 
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TableRow
+            <!--Photo panel-->
+            <TableRow>
+               <!--<ScrollView
+                    android:layout_width="fill_parent"
+                    android:layout_height="200dp"
+                    android:id="@+id/scrollViewImage"
+                    android:layout_gravity="center_horizontal|top"
+                    android:fillViewport="false"
+                    android:scrollbarAlwaysDrawVerticalTrack="true"
+                    android:background="#d93d3d">-->
+                    <ImageView
+                        android:id="@+id/photo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="200dp"
+                        android:scaleType="fitXY"
+                        android:contentDescription="@string/photo_viewer_desc"
+                        android:adjustViewBounds="true"
+                        android:scrollbars="none"
+                        android:layout_gravity="center_horizontal|top"
+                        android:layout_span="1"
+                        android:layout_column="1" />
+               <!--</ScrollView>-->
+            </TableRow>
+
+            <!--Basic Details Header-->
+            <TableRow>
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/basic_details"
+                    android:id="@+id/basic_details_header"
+                    android:layout_column="1"
+                    android:layout_weight="1" />
+
+            </TableRow>
+
+            <!--Image Width Field-->
+            <TableRow>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/EXIF_width"
-                    android:id="@+id/textView"
-                    android:layout_column="1" />
+                    android:id="@+id/label_EXIF_width"
+                    android:layout_column="1"
+                    android:layout_weight="1" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/EXIF_value_unknown"
                     android:id="@+id/image_width"
-                    android:layout_column="2" />
+                    android:layout_column="2"
+                    android:layout_weight="1" />
 
             </TableRow>
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            </TableRow>
-
-            <TableRow
+            <!--Image Height Field-->
+            <TableRow>
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/EXIF_height"
-                    android:id="@+id/textView3"
-                    android:layout_column="1" />
+                    android:id="@+id/label_EXIF_height"
+                    android:layout_column="1"
+                    android:layout_weight="1" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/EXIF_value_unknown"
                     android:id="@+id/image_height"
-                    android:layout_column="2" />
+                    android:layout_column="2"
+                    android:layout_weight="1" />
             </TableRow>
 
-            <TableRow
+            <!--Image Size on Disk Field-->
+            <TableRow>
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/EXIF_size_bytes"
+                    android:id="@+id/label_EXIF_size_bytes"
+                    android:layout_column="1"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/EXIF_value_unknown"
+                    android:id="@+id/image_size_bytes"
+                    android:layout_column="2"
+                    android:layout_weight="1" />
+            </TableRow>
+
+            <!--Image Date Taken-->
+            <TableRow>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/EXIF_date_taken"
+                    android:id="@+id/label_EXIF_date_taken"
+                    android:layout_column="1"
+                    android:layout_weight="1" />
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/EXIF_value_unknown"
+                    android:id="@+id/image_date_taken"
+                    android:layout_column="2"
+                    android:layout_weight="1" />
+            </TableRow>
+
+            <!--Image Camera-->
+            <TableRow>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/EXIF_camera"
+                    android:id="@+id/label_EXIF_camera"
+                    android:layout_column="1"
+                    android:layout_weight="1" />
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/EXIF_value_unknown"
+                    android:id="@+id/image_camera"
+                    android:layout_column="2"
+                    android:layout_weight="1" />
+            </TableRow>
+
+            <!--Image Lens-->
+            <TableRow>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/EXIF_lens"
+                    android:id="@+id/label_EXIF_lens"
+                    android:layout_column="1"
+                    android:layout_weight="1" />
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/EXIF_value_unknown"
+                    android:id="@+id/image_lens"
+                    android:layout_column="2"
+                    android:layout_weight="1" />
+            </TableRow>
+
+            <!--Image Exposure-->
+            <TableRow>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/EXIF_exposure"
+                    android:id="@+id/label_EXIF_exposure"
+                    android:layout_column="1"
+                    android:layout_weight="1" />
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/EXIF_value_unknown"
+                    android:id="@+id/image_exposure"
+                    android:layout_column="2"
+                    android:layout_weight="1" />
+            </TableRow>
+
+            <!--Image Flash-->
+            <TableRow>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/EXIF_flash"
+                    android:id="@+id/label_EXIF_flash"
+                    android:layout_column="1"
+                    android:layout_weight="1" />
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/EXIF_value_unknown"
+                    android:id="@+id/image_flash"
+                    android:layout_column="2"
+                    android:layout_weight="1" />
+            </TableRow>
+
+            <!--Test Edit Value-->
+            <TableRow>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Test Editing a Value"
+                    android:id="@+id/testEdit"
+                    android:layout_column="1"
+                    android:layout_weight="1" />
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:hint="@string/EXIF_value_unknown"
+                    android:id="@+id/testEditValue"
+                    android:layout_column="2"
+                    android:layout_weight="1" />
             </TableRow>
         </TableLayout>
     </ScrollView>
