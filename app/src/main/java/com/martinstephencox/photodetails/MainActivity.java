@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.graphics.drawable.Icon;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
@@ -108,8 +109,8 @@ public class MainActivity extends AppCompatActivity {
                 height.setText(exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH));
                 TextView sizeBytes = (TextView) findViewById(R.id.image_size_bytes);
                 sizeBytes.setText(exif.getAttribute(ExifInterface.TAG_DATETIME_DIGITIZED));   //CAN'T GET WITH EXIFINTERFACE
-                TextView datestamp = (TextView) findViewById(R.id.image_date_taken);
-                datestamp.setText(exif.getAttribute(ExifInterface.TAG_DATETIME));
+                TextView datetime = (TextView) findViewById(R.id.image_date_taken);
+                datetime.setText(exif.getAttribute(ExifInterface.TAG_DATETIME));
                 TextView camera = (TextView) findViewById(R.id.image_camera);
                 camera.setText(exif.getAttribute(ExifInterface.TAG_MAKE));
                 TextView lens = (TextView) findViewById(R.id.image_lens);
@@ -143,27 +144,48 @@ public class MainActivity extends AppCompatActivity {
 
 
     public static String getRealPathFromURI(Context context, Uri uri){
-        // Taken from http://hmkcode.com/android-display-selected-image-and-its-real-path/
+        Cursor cursor = null;
         String filePath = "";
-        String wholeID = DocumentsContract.getDocumentId(uri);
 
-        // Split at colon, use second item in the array
-        String id = wholeID.split(":")[1];
+        if (Build.VERSION.SDK_INT < 19) {
+            // On Android Jelly Bean
 
-        String[] column = { MediaStore.Images.Media.DATA };
+            // Taken from https://stackoverflow.com/questions/3401579/get-filename-and-path-from-uri-from-mediastore
+            try {
+                String[] proj = { MediaStore.Images.Media.DATA };
+                cursor = context.getContentResolver().query(uri,  proj, null, null, null);
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                cursor.moveToFirst();
+                filePath = cursor.getString(column_index);
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+        } else {
+            // On Android KitKat+
 
-        // where id is equal to
-        String sel = MediaStore.Images.Media._ID + "=?";
+            // Taken from http://hmkcode.com/android-display-selected-image-and-its-real-path/
+            String wholeID = DocumentsContract.getDocumentId(uri);
 
-        Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                column, sel, new String[]{id}, null);
+            // Split at colon, use second item in the array
+            String id = wholeID.split(":")[1];
 
-        int columnIndex = cursor.getColumnIndex(column[0]);
+            String[] column = {MediaStore.Images.Media.DATA};
 
-        if (cursor.moveToFirst()) {
-            filePath = cursor.getString(columnIndex);
+            // Where id is equal to
+            String sel = MediaStore.Images.Media._ID + "=?";
+
+            cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    column, sel, new String[]{id}, null);
+
+            int columnIndex = cursor.getColumnIndex(column[0]);
+
+            if (cursor.moveToFirst()) {
+                filePath = cursor.getString(columnIndex);
+            }
+            cursor.close();
         }
-        cursor.close();
         return filePath;
     }
 
@@ -181,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        // noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
