@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EXIF Viewer Pro</string>
+    <string name="app_name">EXIF Editor</string>
     <string name="action_settings">Settings</string>
     <string name="menu_header_details">Details</string>
     <string name="menu_header_map">Map</string>
@@ -12,7 +12,8 @@
     <string name="photo_selector_error_text">There was an error loading the image, please try again</string>
 
     <!--EXIF details labels-->
-    <string name="basic_details">Basic Details</string>
+    <string name="basic_details">Basic Details:</string>
+    <string name="location_details">Location Details:</string>
     <string name="EXIF_width">Width: </string>
     <string name="EXIF_height">Height: </string>
     <string name="EXIF_size_bytes">Size (Bytes): </string>
@@ -21,7 +22,9 @@
     <string name="EXIF_lens">Lens: </string>
     <string name="EXIF_exposure">Exposure: </string>
     <string name="EXIF_flash">Flash: </string>
+    <string name="EXIF_coords">Coordinates: </string>
 
     <!--EXIF details values-->
-    <string name="EXIF_value_unknown">Unknown</string>
+    <string name="EXIF_value_unknown"></string>
+
 </resources>

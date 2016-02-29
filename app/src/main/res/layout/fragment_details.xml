@@ -4,12 +4,7 @@
     tools:context="com.martinstephencox.photodetails.DetailsFragment">
 
     <!-- The error message should always be behind the image -->
-    <TextView android:layout_width="wrap_content" android:layout_height="51dp"
-        android:text="@string/photo_viewer_desc"
-        android:id="@+id/select_photo"
-        android:layout_gravity="center_horizontal|top"
-        style="@style/font_error"
-        android:layout_marginTop="20dp"/>
+    <!-- Make it focusable to stop default focus from going to EditText -->
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -21,30 +16,40 @@
 
         <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="75dp"
+            android:measureWithLargestChild="false"
+            android:stretchColumns="1"
+            android:id="@+id/layout_table">
 
             <!--Photo panel-->
-            <TableRow>
-               <!--<ScrollView
-                    android:layout_width="fill_parent"
-                    android:layout_height="200dp"
-                    android:id="@+id/scrollViewImage"
+            <TableRow android:id="@+id/message_row">
+                <TextView android:layout_width="wrap_content" android:layout_height="51dp"
+                    android:text="@string/photo_viewer_desc"
+                    android:id="@+id/select_photo"
                     android:layout_gravity="center_horizontal|top"
-                    android:fillViewport="false"
-                    android:scrollbarAlwaysDrawVerticalTrack="true"
-                    android:background="#d93d3d">-->
-                    <ImageView
-                        android:id="@+id/photo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="200dp"
-                        android:scaleType="fitXY"
-                        android:contentDescription="@string/photo_viewer_desc"
-                        android:adjustViewBounds="true"
-                        android:scrollbars="none"
-                        android:layout_gravity="center_horizontal|top"
-                        android:layout_span="1"
-                        android:layout_column="1" />
-               <!--</ScrollView>-->
+                    style="@style/font_error"
+                    android:layout_marginTop="20dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_column="1" />
+            </TableRow>
+
+            <!--Photo panel-->
+            <TableRow android:id="@+id/image_row">
+                <ImageView
+                    android:id="@+id/photo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="200dp"
+                    android:scaleType="fitXY"
+                    android:contentDescription="@string/photo_viewer_desc"
+                    android:adjustViewBounds="true"
+                    android:scrollbars="none"
+                    android:layout_gravity="center_horizontal|top"
+                    android:layout_span="2"
+                    android:layout_column="0"
+                    android:background="#000000" />
+
             </TableRow>
 
             <!--Basic Details Header-->
@@ -58,7 +63,7 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/basic_details"
                     android:id="@+id/basic_details_header"
-                    android:layout_column="1"
+                    android:layout_column="0"
                     android:layout_weight="1" />
 
             </TableRow>
@@ -74,7 +79,7 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/EXIF_width"
                     android:id="@+id/label_EXIF_width"
-                    android:layout_column="1"
+                    android:layout_column="0"
                     android:layout_weight="1" />
 
                 <TextView
@@ -99,7 +104,7 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/EXIF_height"
                     android:id="@+id/label_EXIF_height"
-                    android:layout_column="1"
+                    android:layout_column="0"
                     android:layout_weight="1" />
 
                 <TextView
@@ -256,7 +261,7 @@
                     android:layout_weight="1" />
             </TableRow>
 
-            <!--Test Edit Value-->
+            <!--Location Details Header-->
             <TableRow>
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -265,21 +270,38 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Test Editing a Value"
-                    android:id="@+id/testEdit"
-                    android:layout_column="1"
+                    android:text="@string/location_details"
+                    android:id="@+id/location_details_header"
+                    android:layout_column="0"
                     android:layout_weight="1" />
 
-                <EditText
+            </TableRow>
+
+            <!--Location Field-->
+            <TableRow>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:hint="@string/EXIF_value_unknown"
-                    android:id="@+id/testEditValue"
+                    android:text="@string/EXIF_coords"
+                    android:id="@+id/label_EXIF_coords"
+                    android:layout_column="1"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/EXIF_value_unknown"
+                    android:id="@+id/image_coords"
                     android:layout_column="2"
                     android:layout_weight="1" />
+
             </TableRow>
+
         </TableLayout>
     </ScrollView>
-
 </FrameLayout>

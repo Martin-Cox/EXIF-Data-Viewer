@@ -1,12 +1,13 @@
 package com.martinstephencox.photodetails;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.drawable.Icon;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
@@ -14,7 +15,6 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -23,19 +23,21 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-
-import java.io.File;
-import java.lang.reflect.Method;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -85,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(Intent.createChooser(intent, getString(R.string.photo_selector)), RESULT_PHOTO_OK);
             }
         });
-
     }
 
 
@@ -95,10 +96,14 @@ public class MainActivity extends AppCompatActivity {
             //Successfully selected an image, load it into ImageView using Glide
             ImageView imageView = (ImageView) findViewById(R.id.photo);
             imageView.setVisibility(View.VISIBLE);
-            TextView selectPhoto = (TextView) findViewById(R.id.select_photo);
-            selectPhoto.setVisibility(View.INVISIBLE);
+            TableRow imageRow = (TableRow) findViewById(R.id.image_row);
+            imageRow.setBackgroundColor(getResources().getColor(R.color.colorBlack));
+            imageRow.setVisibility(View.VISIBLE);
+            TableRow messageRow = (TableRow) findViewById(R.id.message_row);
+            TableLayout table = (TableLayout) findViewById(R.id.layout_table);
+            table.removeView(messageRow);
             try {
-                Glide.with(MainActivity.this).load(data.getData()).centerCrop().into(imageView);
+                Glide.with(MainActivity.this).load(data.getData()).fitCenter().into(imageView);
                 String exifPath = getRealPathFromURI(this.getApplicationContext(), data.getData());
                 ExifInterface exif = new ExifInterface(exifPath);
 
@@ -108,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 TextView height = (TextView) findViewById(R.id.image_height);
                 height.setText(exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH));
                 TextView sizeBytes = (TextView) findViewById(R.id.image_size_bytes);
-                sizeBytes.setText(exif.getAttribute(ExifInterface.TAG_DATETIME_DIGITIZED));   //CAN'T GET WITH EXIFINTERFACE
+                sizeBytes.setText("Cannot");   //CAN'T GET WITH EXIFINTERFACE
                 TextView datetime = (TextView) findViewById(R.id.image_date_taken);
                 datetime.setText(exif.getAttribute(ExifInterface.TAG_DATETIME));
                 TextView camera = (TextView) findViewById(R.id.image_camera);
@@ -119,6 +124,24 @@ public class MainActivity extends AppCompatActivity {
                 exposure.setText(exif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME));
                 TextView flash = (TextView) findViewById(R.id.image_flash);
                 flash.setText(exif.getAttribute(ExifInterface.TAG_FLASH));
+                TextView coords = (TextView) findViewById(R.id.image_flash);
+                //coords.setText(exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE) + " " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
+
+
+                double lat = 0;
+                double lon = 0;
+
+                String latString = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+                String lonString = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+
+
+                if (!latString.equals(null) && !lonString.equals(null)) {
+
+
+                    MapView gMap = (MapView) findViewById(R.id.map);
+
+                    gMap.getMap().addMarker(new MarkerOptions().position(new LatLng(48.19, 11.56)).title("HELLO WORLD"));
+                }
             } catch (Exception e) {
                 createErrorDialog(android.R.string.dialog_alert_title, R.string.photo_selector_error_text);
             }
@@ -229,14 +252,14 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     return DetailsFragment.newInstance(position);
                 case 1:
-                    return MapFragment.newInstance(position);
+                    return MapsFragment.newInstance(position);
             }
             return null;
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
+            // Show 2 total pages.
             return 2;
         }
 
