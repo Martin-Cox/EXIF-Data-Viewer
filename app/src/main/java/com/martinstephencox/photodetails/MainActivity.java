@@ -161,6 +161,8 @@ public class MainActivity extends AppCompatActivity {
                             //Save the modifed image
                             exif.setAttribute(ExifInterface.TAG_MAKE, ((TextView) findViewById(R.id.image_camera)).getText().toString());
                             exif.saveAttributes();
+                            Snackbar successSnackbar = Snackbar.make(view, R.string.photo_save_success_text, Snackbar.LENGTH_SHORT);
+                            successSnackbar.show();
                         } catch (Exception e) {
                             createErrorDialog(android.R.string.dialog_alert_title, R.string.photo_save_error_text);
                             e.printStackTrace();
