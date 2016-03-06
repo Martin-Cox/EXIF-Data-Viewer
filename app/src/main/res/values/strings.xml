@@ -11,6 +11,10 @@
     <string name="photo_selector">Select a photo</string>
     <string name="photo_selector_error_text">There was an error loading the image, please try again</string>
 
+    <!--Save Image-->
+    <string name="photo_save">Save image</string>
+    <string name="photo_save_error_text">Save isnt actually implemented yet!</string>
+
     <!--EXIF details labels-->
     <string name="basic_details">Basic Details:</string>
     <string name="location_details">Location Details:</string>

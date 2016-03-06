@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.select_photo_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,6 +142,20 @@ public class MainActivity extends AppCompatActivity {
 
                     gMap.getMap().addMarker(new MarkerOptions().position(new LatLng(48.19, 11.56)).title("HELLO WORLD"));
                 }
+
+                FloatingActionButton selectPhotoFab = (FloatingActionButton) findViewById(R.id.select_photo_fab);
+                selectPhotoFab.hide();
+                FloatingActionButton savePhotoFab = (FloatingActionButton) findViewById(R.id.save_photo_fab);
+                savePhotoFab.show();
+
+                savePhotoFab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //Save the modifed image
+                        createErrorDialog(android.R.string.dialog_alert_title, R.string.photo_save_error_text);
+                    }
+                });
+
             } catch (Exception e) {
                 createErrorDialog(android.R.string.dialog_alert_title, R.string.photo_selector_error_text);
             }
