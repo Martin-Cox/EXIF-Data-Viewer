@@ -13,6 +13,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -38,6 +41,8 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.FileOutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -105,7 +110,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 Glide.with(MainActivity.this).load(data.getData()).fitCenter().into(imageView);
                 String exifPath = getRealPathFromURI(this.getApplicationContext(), data.getData());
-                ExifInterface exif = new ExifInterface(exifPath);
+                System.out.println("HERE HERE HERE: " + exifPath);
+                final ExifInterface exif = new ExifInterface(exifPath);
 
                 //Getting all the Exif attributes
                 TextView width = (TextView) findViewById(R.id.image_width);
@@ -151,8 +157,14 @@ public class MainActivity extends AppCompatActivity {
                 savePhotoFab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //Save the modifed image
-                        createErrorDialog(android.R.string.dialog_alert_title, R.string.photo_save_error_text);
+                        try {
+                            //Save the modifed image
+                            exif.setAttribute(ExifInterface.TAG_MAKE, ((TextView) findViewById(R.id.image_camera)).getText().toString());
+                            exif.saveAttributes();
+                        } catch (Exception e) {
+                            createErrorDialog(android.R.string.dialog_alert_title, R.string.photo_save_error_text);
+                            e.printStackTrace();
+                        }
                     }
                 });
 
