@@ -47,6 +47,7 @@ import java.io.FileOutputStream;
 public class MainActivity extends AppCompatActivity {
 
     int RESULT_PHOTO_OK = 1;
+    ExifInterface exif;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 Glide.with(MainActivity.this).load(data.getData()).fitCenter().into(imageView);
                 String exifPath = getRealPathFromURI(this.getApplicationContext(), data.getData());
                 System.out.println("HERE HERE HERE: " + exifPath);
-                final ExifInterface exif = new ExifInterface(exifPath);
+                exif = new ExifInterface(exifPath);
 
                 //Getting all the Exif attributes
                 TextView width = (TextView) findViewById(R.id.image_width);
@@ -133,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
                 TextView coords = (TextView) findViewById(R.id.image_flash);
                 //coords.setText(exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE) + " " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
 
-
                 double lat = 0;
                 double lon = 0;
 
@@ -148,27 +148,6 @@ public class MainActivity extends AppCompatActivity {
 
                     gMap.getMap().addMarker(new MarkerOptions().position(new LatLng(48.19, 11.56)).title("HELLO WORLD"));
                 }
-
-                FloatingActionButton selectPhotoFab = (FloatingActionButton) findViewById(R.id.select_photo_fab);
-                selectPhotoFab.hide();
-                FloatingActionButton savePhotoFab = (FloatingActionButton) findViewById(R.id.save_photo_fab);
-                savePhotoFab.show();
-
-                savePhotoFab.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        try {
-                            //Save the modifed image
-                            exif.setAttribute(ExifInterface.TAG_MAKE, ((TextView) findViewById(R.id.image_camera)).getText().toString());
-                            exif.saveAttributes();
-                            Snackbar successSnackbar = Snackbar.make(view, R.string.photo_save_success_text, Snackbar.LENGTH_SHORT);
-                            successSnackbar.show();
-                        } catch (Exception e) {
-                            createErrorDialog(android.R.string.dialog_alert_title, R.string.photo_save_error_text);
-                            e.printStackTrace();
-                        }
-                    }
-                });
 
             } catch (Exception e) {
                 createErrorDialog(android.R.string.dialog_alert_title, R.string.photo_selector_error_text);
@@ -240,12 +219,28 @@ public class MainActivity extends AppCompatActivity {
         return filePath;
     }
 
+    public boolean saveImage() {
+        try {
+            //Save the modified image
+            exif.setAttribute(ExifInterface.TAG_MAKE, ((TextView) findViewById(R.id.image_camera)).getText().toString());
+            exif.saveAttributes();
+            View coordLayout = findViewById(R.id.main_content);
+            Snackbar successSnackbar = Snackbar.make(coordLayout, R.string.photo_save_success_text, Snackbar.LENGTH_SHORT);
+            successSnackbar.show();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+    //HERE FOR ACTION BAR OPTIONS
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -256,6 +251,23 @@ public class MainActivity extends AppCompatActivity {
 
         // noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+
+        if (id == R.id.action_save) {
+
+            if (this.exif == null) {
+                //TODO CREATE ERROR DIALOG MUST SELECT AN IMAGE FIRST
+            } else {
+                boolean result = saveImage();
+                if (result == false) {
+                    //TODO CREATE ERROR DIALOG THERE WAS AN ERROR SAVING THE IMAGE
+                }
+            }
+
+        }
+
+        if (id == R.id.action_clear_EXIF) {
             return true;
         }
 

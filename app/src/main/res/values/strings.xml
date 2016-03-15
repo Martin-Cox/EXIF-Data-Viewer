@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">EXIF Editor</string>
-    <string name="action_settings">Settings</string>
     <string name="menu_header_details">Details</string>
     <string name="menu_header_map">Map</string>
+
+    <!--Action Bar Menu-->
+    <string name="action_settings">Settings</string>
+    <string name="action_save">Save</string>
+    <string name="action_clear_EXIF">Clear EXIF data</string>
 
     <!--Photo tab-->
     <string name="photo_viewer_desc">Please select a photo!</string>
