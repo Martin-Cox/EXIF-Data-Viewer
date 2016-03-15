@@ -257,11 +257,11 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_save) {
 
             if (this.exif == null) {
-                //TODO CREATE ERROR DIALOG MUST SELECT AN IMAGE FIRST
+                createErrorDialog(R.string.photo_save, R.string.photo_missing_image_error_text);
             } else {
                 boolean result = saveImage();
                 if (result == false) {
-                    //TODO CREATE ERROR DIALOG THERE WAS AN ERROR SAVING THE IMAGE
+                    createErrorDialog(R.string.photo_save, R.string.photo_save_error_text);
                 }
             }
 

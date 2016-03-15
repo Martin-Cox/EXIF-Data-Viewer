@@ -18,6 +18,7 @@
     <!--Save Image-->
     <string name="photo_save">Save image</string>
     <string name="photo_save_error_text">Something went wrong with save!</string>
+    <string name="photo_missing_image_error_text">You need to select an image before you can save!</string>
     <string name="photo_save_success_text">Image saved</string>
 
     <!--EXIF details labels-->
