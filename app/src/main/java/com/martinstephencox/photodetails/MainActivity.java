@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
                     MapView gMap = (MapView) findViewById(R.id.map);
 
-                    gMap.getMap().addMarker(new MarkerOptions().position(new LatLng(48.19, 11.56)).title("HELLO WORLD"));
+                    gMap.getMap().addMarker(new MarkerOptions().position(new LatLng(48.19, 11.56)).title(getString(R.string.map_original_position)));
                 }
 
             } catch (Exception e) {

@@ -11,6 +11,9 @@
     <!--Photo tab-->
     <string name="photo_viewer_desc">Please select a photo!</string>
 
+    <!--Map tab-->
+    <string name="map_original_position">Original Location</string>
+
     <!--Photo selector-->
     <string name="photo_selector">Select a photo</string>
     <string name="photo_selector_error_text">There was an error loading the image, please try again</string>
