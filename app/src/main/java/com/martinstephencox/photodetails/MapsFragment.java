@@ -73,6 +73,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
         gMap = gMapView.getMap();
         gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        gMap.setMyLocationEnabled(true);
 
         //gMapView.getMapAsync(this);
 

@@ -151,6 +151,8 @@ public class MainActivity extends AppCompatActivity {
 
                     //TODO GET LAT LONG FROM EXIF (IF IT EXISTS)
 
+                    //TODO ADD MOBILE PHONE GEOLOCATION TO MAP
+
                     gMap.getMap().addMarker(new MarkerOptions().position(new LatLng(48.19, 11.56)).title(getString(R.string.map_original_position)));
 
                     MarkerOptions newPosMarker = new MarkerOptions().position(new LatLng(61.22, 11.56)).title(getString(R.string.map_new_position)).visible(true).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
