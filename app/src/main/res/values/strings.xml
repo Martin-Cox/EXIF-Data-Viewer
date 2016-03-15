@@ -13,6 +13,7 @@
 
     <!--Map tab-->
     <string name="map_original_position">Original Location</string>
+    <string name="map_new_position">New Location</string>
 
     <!--Photo selector-->
     <string name="photo_selector">Select a photo</string>

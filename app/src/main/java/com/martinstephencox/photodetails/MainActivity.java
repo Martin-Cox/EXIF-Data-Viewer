@@ -37,9 +37,12 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.FileOutputStream;
@@ -144,9 +147,15 @@ public class MainActivity extends AppCompatActivity {
                 if (!latString.equals(null) && !lonString.equals(null)) {
 
 
-                    MapView gMap = (MapView) findViewById(R.id.map);
+                    final MapView gMap = (MapView) findViewById(R.id.map);
+
+                    //TODO GET LAT LONG FROM EXIF (IF IT EXISTS)
 
                     gMap.getMap().addMarker(new MarkerOptions().position(new LatLng(48.19, 11.56)).title(getString(R.string.map_original_position)));
+
+                    MarkerOptions newPosMarker = new MarkerOptions().position(new LatLng(61.22, 11.56)).title(getString(R.string.map_new_position)).visible(true).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+
+                    gMap.getMap().addMarker(newPosMarker);
                 }
 
             } catch (Exception e) {
