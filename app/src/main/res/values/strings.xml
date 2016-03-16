@@ -25,6 +25,9 @@
     <string name="photo_missing_image_error_text">You need to select an image before you can save!</string>
     <string name="photo_save_success_text">Image saved</string>
 
+    <!--Clear details-->
+    <string name="clear_EXIF_error_text">There was an error clearing the EXIF data, please try again</string>
+
     <!--EXIF details labels-->
     <string name="basic_details">Basic Details:</string>
     <string name="location_details">Location Details:</string>

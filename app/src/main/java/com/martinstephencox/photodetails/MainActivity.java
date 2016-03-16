@@ -30,8 +30,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -279,7 +281,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id == R.id.action_clear_EXIF) {
-            return true;
+            try {
+
+                ViewGroup detailsScroll = (ViewGroup) findViewById(R.id.layout_table);
+
+                for (int i = 0; i < detailsScroll.getChildCount(); i++) {
+                    ViewGroup tableRow = (ViewGroup) detailsScroll.getChildAt(i);
+                    for (int j = 0; j < tableRow.getChildCount(); j++) {
+                        View view = tableRow.getChildAt(j);
+                        if (view instanceof EditText) {
+                            ((EditText) view).setText("");
+                        }
+                    }
+                }
+
+                return true;
+            } catch (Exception e) {
+                createErrorDialog(R.string.action_clear_EXIF, R.string.clear_EXIF_error_text);
+            }
         }
 
         return super.onOptionsItemSelected(item);
