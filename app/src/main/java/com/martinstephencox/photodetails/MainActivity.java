@@ -27,6 +27,7 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 
 import android.view.ViewGroup;
@@ -53,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
     int RESULT_PHOTO_OK = 1;
     ExifInterface exif;
+    MarkerOptions origPosMarker;
+    MarkerOptions newPosMarker;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -116,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 Glide.with(MainActivity.this).load(data.getData()).fitCenter().into(imageView);
                 String exifPath = getRealPathFromURI(this.getApplicationContext(), data.getData());
-                System.out.println("HERE HERE HERE: " + exifPath);
+                System.out.println("HERE HERE HERE: " + exifPath);  //TODO REMOVE THIS LINE
                 exif = new ExifInterface(exifPath);
 
                 //Getting all the Exif attributes
@@ -138,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 flash.setText(exif.getAttribute(ExifInterface.TAG_FLASH));
                 TextView coords = (TextView) findViewById(R.id.image_flash);
                 //coords.setText(exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE) + " " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
+                System.out.println("Original Pos: " + exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE) + " " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
 
                 double lat = 0;
                 double lon = 0;
@@ -153,13 +157,17 @@ public class MainActivity extends AppCompatActivity {
 
                     //TODO GET LAT LONG FROM EXIF (IF IT EXISTS)
 
-                    //TODO ADD MOBILE PHONE GEOLOCATION TO MAP
+                    origPosMarker = new MarkerOptions().position(new LatLng(48.19, 11.56)).title(getString(R.string.map_original_position));
 
-                    gMap.getMap().addMarker(new MarkerOptions().position(new LatLng(48.19, 11.56)).title(getString(R.string.map_original_position)));
+                    newPosMarker = new MarkerOptions().position(new LatLng(61.22, 11.56)).title(getString(R.string.map_new_position)).visible(true).draggable(true).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
-                    MarkerOptions newPosMarker = new MarkerOptions().position(new LatLng(61.22, 11.56)).title(getString(R.string.map_new_position)).visible(true).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                    gMap.getMap().addMarker(origPosMarker);
 
                     gMap.getMap().addMarker(newPosMarker);
+
+                    //TODO SET newPosMarker TO SAME LOCATION AS origPosMarker AND SET visible(false);
+                    //TODO ADD MAP TOUCH EVENT TO MOVE THE newPosMarker IN ADDITION TO BEING ABLE TO DRAG IT
+
                 }
 
             } catch (Exception e) {
@@ -236,10 +244,19 @@ public class MainActivity extends AppCompatActivity {
         try {
             //Save the modified image
             exif.setAttribute(ExifInterface.TAG_MAKE, ((TextView) findViewById(R.id.image_camera)).getText().toString());
+            if (newPosMarker != null) {
+                exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, String.valueOf(newPosMarker.getPosition().longitude));
+                exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, String.valueOf(newPosMarker.getPosition().latitude));
+                System.out.println("Saving Pos: " + exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE) + " " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
+            }
             exif.saveAttributes();
             View coordLayout = findViewById(R.id.main_content);
             Snackbar successSnackbar = Snackbar.make(coordLayout, R.string.photo_save_success_text, Snackbar.LENGTH_SHORT);
             successSnackbar.show();
+
+            ViewGroup mapGroup = (ViewGroup) findViewById(R.id.map);
+            int count = mapGroup.getChildCount();
+
             return true;
         } catch (Exception e) {
             return false;

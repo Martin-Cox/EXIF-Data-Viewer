@@ -23,7 +23,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * Use the {@link MapsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapsFragment extends Fragment implements OnMapReadyCallback {
+public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
     MapView gMapView;
     GoogleMap gMap = null;
@@ -83,9 +83,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap map) {
         gMap = map;
-        gMap.addMarker(new MarkerOptions()
-                .position(new LatLng(0, 0))
-                .title("Marker"));
+    }
+
+    @Override
+    public void onMapClick (LatLng point) {
 
     }
 
