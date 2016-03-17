@@ -52,6 +52,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -152,8 +153,8 @@ public class MainActivity extends AppCompatActivity {
                 exposure.setText(exif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME));
                 TextView flash = (TextView) findViewById(R.id.image_flash);
                 flash.setText(exif.getAttribute(ExifInterface.TAG_FLASH));
-                TextView coords = (TextView) findViewById(R.id.image_flash);
-                //coords.setText(exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE) + " " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
+                TextView latitude = (TextView) findViewById(R.id.image_latitude);
+                TextView longitude = (TextView) findViewById(R.id.image_longitude);
 
                 String latString = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
                 String lonString = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
@@ -196,8 +197,17 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("LOAD IMAGE COORDS DEGREES: " + lat + " # " + lon);
                     System.out.println("REF LAT: " + exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF) + " # REF LON: " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF));
 
+                    DecimalFormat formatter = new DecimalFormat("#.000");
+
+                    String latFormat = formatter.format(posMarker.getPosition().latitude);
+                    String lonFormat = formatter.format(posMarker.getPosition().longitude);
+
+                    latitude.setText(latFormat);  //Use posMarker location as field actually reflects marker position
+                    longitude.setText(lonFormat);  //Use posMarker location as field actually reflects marker position
+
                     //TODO ADD MAP TOUCH EVENT TO MOVE THE posMarker
                     //TODO DRAGGING THE MARKER DOESN'T ACTUALLY CHANGE THE POSITION!
+                    //TODO IN MAP TOUCH EVENT CHANGE coordsDegrees TO MARKER NEW POS
 
                 }
 
@@ -391,6 +401,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }
+
+                //TODO MOVE posMarker TO 0.0 0.0 TO CLEAR GPS DATA
 
                 return true;
             } catch (Exception e) {
