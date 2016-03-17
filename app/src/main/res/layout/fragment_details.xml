@@ -64,7 +64,38 @@
                     android:text="@string/basic_details"
                     android:id="@+id/basic_details_header"
                     android:layout_column="0"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:textSize="26dp"
+                    android:paddingBottom="10dp"
+                    android:gravity="center_vertical|center_horizontal" />
+
+            </TableRow>
+
+            <!--Filename Field-->
+            <TableRow>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/EXIF_filename"
+                    android:id="@+id/label_EXIF_filename"
+                    android:layout_column="1"
+                    android:layout_weight="0.35"
+                    android:paddingBottom="5dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/EXIF_value_unknown"
+                    android:id="@+id/image_filename"
+                    android:layout_column="2"
+                    android:layout_weight="0.65"
+                    android:paddingBottom="5dp"/>
 
             </TableRow>
 
@@ -80,7 +111,8 @@
                     android:text="@string/EXIF_width"
                     android:id="@+id/label_EXIF_width"
                     android:layout_column="1"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.35"
+                    android:paddingBottom="5dp"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -89,7 +121,8 @@
                     android:text="@string/EXIF_value_unknown"
                     android:id="@+id/image_width"
                     android:layout_column="2"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.65"
+                    android:paddingBottom="5dp"/>
 
             </TableRow>
 
@@ -105,7 +138,8 @@
                     android:text="@string/EXIF_height"
                     android:id="@+id/label_EXIF_height"
                     android:layout_column="1"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.35"
+                    android:paddingBottom="5dp"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -114,7 +148,8 @@
                     android:text="@string/EXIF_value_unknown"
                     android:id="@+id/image_height"
                     android:layout_column="2"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.65"
+                    android:paddingBottom="5dp"/>
             </TableRow>
 
             <!--Image Size on Disk Field-->
@@ -129,7 +164,8 @@
                     android:text="@string/EXIF_size_bytes"
                     android:id="@+id/label_EXIF_size_bytes"
                     android:layout_column="1"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.35"
+                    android:paddingBottom="5dp"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -138,7 +174,8 @@
                     android:text="@string/EXIF_value_unknown"
                     android:id="@+id/image_size_bytes"
                     android:layout_column="2"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.65"
+                    android:paddingBottom="5dp"/>
             </TableRow>
 
             <!--Image Date Taken-->
@@ -153,7 +190,8 @@
                     android:text="@string/EXIF_date_taken"
                     android:id="@+id/label_EXIF_date_taken"
                     android:layout_column="1"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.35"
+                    android:paddingBottom="5dp"/>
 
                 <EditText
                     android:layout_width="0dp"
@@ -162,7 +200,8 @@
                     android:text="@string/EXIF_value_unknown"
                     android:id="@+id/image_date_taken"
                     android:layout_column="2"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.65"
+                    android:paddingBottom="5dp"/>
             </TableRow>
 
             <!--Image Camera-->
@@ -177,7 +216,8 @@
                     android:text="@string/EXIF_camera"
                     android:id="@+id/label_EXIF_camera"
                     android:layout_column="1"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.35"
+                    android:paddingBottom="5dp"/>
 
                 <EditText
                     android:layout_width="0dp"
@@ -186,7 +226,8 @@
                     android:text="@string/EXIF_value_unknown"
                     android:id="@+id/image_camera"
                     android:layout_column="2"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.65"
+                    android:paddingBottom="5dp"/>
             </TableRow>
 
             <!--Image Lens-->
@@ -201,7 +242,8 @@
                     android:text="@string/EXIF_lens"
                     android:id="@+id/label_EXIF_lens"
                     android:layout_column="1"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.35"
+                    android:paddingBottom="5dp"/>
 
                 <EditText
                     android:layout_width="0dp"
@@ -210,7 +252,8 @@
                     android:text="@string/EXIF_value_unknown"
                     android:id="@+id/image_lens"
                     android:layout_column="2"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.65"
+                    android:paddingBottom="5dp"/>
             </TableRow>
 
             <!--Image Exposure-->
@@ -225,7 +268,8 @@
                     android:text="@string/EXIF_exposure"
                     android:id="@+id/label_EXIF_exposure"
                     android:layout_column="1"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.35"
+                    android:paddingBottom="5dp"/>
 
                 <EditText
                     android:layout_width="0dp"
@@ -234,7 +278,8 @@
                     android:text="@string/EXIF_value_unknown"
                     android:id="@+id/image_exposure"
                     android:layout_column="2"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.65"
+                    android:paddingBottom="5dp"/>
             </TableRow>
 
             <!--Image Flash-->
@@ -249,7 +294,8 @@
                     android:text="@string/EXIF_flash"
                     android:id="@+id/label_EXIF_flash"
                     android:layout_column="1"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.35"
+                    android:paddingBottom="5dp"/>
 
                 <EditText
                     android:layout_width="0dp"
@@ -258,7 +304,8 @@
                     android:text="@string/EXIF_value_unknown"
                     android:id="@+id/image_flash"
                     android:layout_column="2"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.65"
+                    android:paddingBottom="5dp"/>
             </TableRow>
 
             <!--Location Details Header-->
@@ -273,7 +320,11 @@
                     android:text="@string/location_details"
                     android:id="@+id/location_details_header"
                     android:layout_column="0"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:textSize="26dp"
+                    android:paddingBottom="10dp"
+                    android:gravity="center_vertical|center_horizontal" />
 
             </TableRow>
 
@@ -289,7 +340,8 @@
                     android:text="@string/EXIF_coords"
                     android:id="@+id/label_EXIF_coords"
                     android:layout_column="1"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.35"
+                    android:paddingBottom="5dp"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -298,7 +350,8 @@
                     android:text="@string/EXIF_value_unknown"
                     android:id="@+id/image_coords"
                     android:layout_column="2"
-                    android:layout_weight="1" />
+                    android:layout_weight="0.65"
+                    android:paddingBottom="5dp"/>
 
             </TableRow>
 

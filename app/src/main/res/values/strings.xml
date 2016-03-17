@@ -28,8 +28,9 @@
     <string name="clear_EXIF_error_text">There was an error clearing the EXIF data, please try again</string>
 
     <!--EXIF details labels-->
-    <string name="basic_details">Basic Details:</string>
-    <string name="location_details">Location Details:</string>
+    <string name="basic_details">Basic Details</string>
+    <string name="location_details">Location Details</string>
+    <string name="EXIF_filename">Filename: </string>
     <string name="EXIF_width">Width: </string>
     <string name="EXIF_height">Height: </string>
     <string name="EXIF_size_bytes">Size (Bytes): </string>

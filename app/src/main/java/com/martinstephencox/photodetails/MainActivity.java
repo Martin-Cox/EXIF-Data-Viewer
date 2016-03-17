@@ -126,6 +126,12 @@ public class MainActivity extends AppCompatActivity {
                 exif = new ExifInterface(exifPath);
 
                 //Getting all the Exif attributes
+
+                String[] filepathComponents = exifPath.split("/");
+
+                TextView filename = (TextView) findViewById(R.id.image_filename);
+                filename.setText(filepathComponents[filepathComponents.length-1]);
+
                 TextView width = (TextView) findViewById(R.id.image_width);
                 width.setText(exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH));
                 TextView height = (TextView) findViewById(R.id.image_height);
