@@ -143,21 +143,36 @@ public class MainActivity extends AppCompatActivity {
                 //coords.setText(exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE) + " " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
                 System.out.println("Original Pos: " + exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE) + " " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
 
-                double lat = 0;
-                double lon = 0;
-
                 String latString = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
                 String lonString = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+                String latRef = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
+                String lonRef = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
 
 
-                if (!latString.equals(null) && !lonString.equals(null)) {
+                if (!latString.equals(null) && !lonString.equals(null) && !latRef.equals(null) && !lonRef.equals(null)) {
 
+                    double lat = 0;
+                    double lon = 0;
+
+                    if (latRef.equals("N")) {
+                        //North of equator, positive value
+                        lat = toDegrees(latString);
+                    } else {
+                        //South of equator, negative value
+                        lat = 0 - toDegrees(latString);
+                    }
+
+                    if (lonRef.equals("E")) {
+                        //East of prime meridian, positive value
+                        lon = toDegrees(lonString);
+                    } else {
+                        //West of prime meridian, negative value
+                        lon = 0 - toDegrees(lonString);
+                    }
 
                     final MapView gMap = (MapView) findViewById(R.id.map);
 
-                    //TODO GET LAT LONG FROM EXIF (IF IT EXISTS)
-
-                    origPosMarker = new MarkerOptions().position(new LatLng(48.19, 11.56)).title(getString(R.string.map_original_position));
+                    origPosMarker = new MarkerOptions().position(new LatLng(lat, lon)).title(getString(R.string.map_original_position));
 
                     newPosMarker = new MarkerOptions().position(new LatLng(61.22, 11.56)).title(getString(R.string.map_new_position)).visible(true).draggable(true).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
@@ -191,6 +206,31 @@ public class MainActivity extends AppCompatActivity {
             })
             .setIcon(android.R.drawable.ic_dialog_alert)
             .show();
+    }
+
+    public Double toDegrees(String ref) {
+        //Credit to http://android-er.blogspot.co.uk/2010/01/convert-exif-gps-info-to-degree-format.html
+        Double result = null;
+        String[] DMS = ref.split(",", 3);
+
+        String[] stringD = DMS[0].split("/", 2);
+        Double D0 = new Double(stringD[0]);
+        Double D1 = new Double(stringD[1]);
+        Double FloatD = D0/D1;
+
+        String[] stringM = DMS[1].split("/", 2);
+        Double M0 = new Double(stringM[0]);
+        Double M1 = new Double(stringM[1]);
+        Double FloatM = M0/M1;
+
+        String[] stringS = DMS[2].split("/", 2);
+        Double S0 = new Double(stringS[0]);
+        Double S1 = new Double(stringS[1]);
+        Double FloatS = S0/S1;
+
+        result = new Double(FloatD + (FloatM/60) + (FloatS/3600));
+
+        return result;
     }
 
 
@@ -245,9 +285,8 @@ public class MainActivity extends AppCompatActivity {
             //Save the modified image
             exif.setAttribute(ExifInterface.TAG_MAKE, ((TextView) findViewById(R.id.image_camera)).getText().toString());
             if (newPosMarker != null) {
-                exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, String.valueOf(newPosMarker.getPosition().longitude));
-                exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, String.valueOf(newPosMarker.getPosition().latitude));
-                System.out.println("Saving Pos: " + exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE) + " " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
+                //exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, String.valueOf(newPosMarker.getPosition().longitude));
+                //exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, String.valueOf(newPosMarker.getPosition().latitude));
             }
             exif.saveAttributes();
             View coordLayout = findViewById(R.id.main_content);
