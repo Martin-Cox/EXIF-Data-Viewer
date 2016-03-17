@@ -79,7 +79,7 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/EXIF_width"
                     android:id="@+id/label_EXIF_width"
-                    android:layout_column="0"
+                    android:layout_column="1"
                     android:layout_weight="1" />
 
                 <TextView
@@ -104,7 +104,7 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/EXIF_height"
                     android:id="@+id/label_EXIF_height"
-                    android:layout_column="0"
+                    android:layout_column="1"
                     android:layout_weight="1" />
 
                 <TextView
