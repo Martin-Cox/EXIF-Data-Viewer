@@ -53,9 +53,11 @@ import java.io.FileOutputStream;
 public class MainActivity extends AppCompatActivity {
 
     int RESULT_PHOTO_OK = 1;
+    boolean addedMarker = false;
     ExifInterface exif;
-    MarkerOptions origPosMarker;
-    MarkerOptions newPosMarker;
+    MarkerOptions posMarkerOptions = new MarkerOptions().position(new LatLng(0, 0)).visible(false).draggable(true);
+    Marker posMarker;
+
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -172,15 +174,19 @@ public class MainActivity extends AppCompatActivity {
 
                     final MapView gMap = (MapView) findViewById(R.id.map);
 
-                    origPosMarker = new MarkerOptions().position(new LatLng(lat, lon)).title(getString(R.string.map_original_position));
+                    //origPosMarker = new MarkerOptions().position(new LatLng(lat, lon)).title(getString(R.string.map_original_position));
 
-                    newPosMarker = new MarkerOptions().position(new LatLng(61.22, 11.56)).title(getString(R.string.map_new_position)).visible(true).draggable(true).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                    //newPosMarker = new MarkerOptions().position(new LatLng(61.22, 11.56)).title(getString(R.string.map_new_position)).visible(true).draggable(true).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
-                    gMap.getMap().addMarker(origPosMarker);
+                    if (addedMarker == false) {
+                        posMarker = gMap.getMap().addMarker(posMarkerOptions);
+                        posMarker.setTitle(getString(R.string.map_position));
+                        addedMarker = true;
+                    }
 
-                    gMap.getMap().addMarker(newPosMarker);
+                    posMarker.setVisible(true);
+                    posMarker.setPosition(new LatLng(lat, lon));
 
-                    //TODO SET newPosMarker TO SAME LOCATION AS origPosMarker AND SET visible(false);
                     //TODO ADD MAP TOUCH EVENT TO MOVE THE newPosMarker IN ADDITION TO BEING ABLE TO DRAG IT
 
                 }
@@ -284,9 +290,12 @@ public class MainActivity extends AppCompatActivity {
         try {
             //Save the modified image
             exif.setAttribute(ExifInterface.TAG_MAKE, ((TextView) findViewById(R.id.image_camera)).getText().toString());
-            if (newPosMarker != null) {
-                //exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, String.valueOf(newPosMarker.getPosition().longitude));
-                //exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, String.valueOf(newPosMarker.getPosition().latitude));
+            if (posMarker != null) {
+                exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, String.valueOf(posMarker.getPosition().longitude));
+                exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, String.valueOf(posMarker.getPosition().latitude));
+
+                //TODO SAVING COORDS DOESN'T SAVE CORRECT COORDS
+
             }
             exif.saveAttributes();
             View coordLayout = findViewById(R.id.main_content);
