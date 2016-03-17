@@ -161,7 +161,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/EXIF_size_bytes"
+                    android:text="@string/EXIF_size_label"
                     android:id="@+id/label_EXIF_size_bytes"
                     android:layout_column="1"
                     android:layout_weight="0.35"

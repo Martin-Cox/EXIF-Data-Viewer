@@ -33,7 +33,8 @@
     <string name="EXIF_filename">Filename: </string>
     <string name="EXIF_width">Width: </string>
     <string name="EXIF_height">Height: </string>
-    <string name="EXIF_size_bytes">Size (Bytes): </string>
+    <string name="EXIF_size_label">Size: </string>
+    <string name="EXIF_size">Kb</string>
     <string name="EXIF_date_taken">Date Taken: </string>
     <string name="EXIF_camera">Camera: </string>
     <string name="EXIF_lens">Lens: </string>

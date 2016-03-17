@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -49,6 +50,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.File;
 import java.io.FileOutputStream;
 
 public class MainActivity extends AppCompatActivity {
@@ -122,22 +124,24 @@ public class MainActivity extends AppCompatActivity {
             try {
                 Glide.with(MainActivity.this).load(data.getData()).fitCenter().into(imageView);
                 String exifPath = getRealPathFromURI(this.getApplicationContext(), data.getData());
-                System.out.println("HERE HERE HERE: " + exifPath);  //TODO REMOVE THIS LINE
                 exif = new ExifInterface(exifPath);
 
                 //Getting all the Exif attributes
 
                 String[] filepathComponents = exifPath.split("/");
 
+                File image = new File(exifPath);
+                Long length = image.length();
+                length = length/1024;
+
                 TextView filename = (TextView) findViewById(R.id.image_filename);
                 filename.setText(filepathComponents[filepathComponents.length-1]);
-
                 TextView width = (TextView) findViewById(R.id.image_width);
                 width.setText(exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH));
                 TextView height = (TextView) findViewById(R.id.image_height);
                 height.setText(exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH));
-                TextView sizeBytes = (TextView) findViewById(R.id.image_size_bytes);
-                sizeBytes.setText("Cannot");   //CAN'T GET WITH EXIFINTERFACE
+                TextView size = (TextView) findViewById(R.id.image_size_bytes);
+                size.setText(length.toString() + getString(R.string.EXIF_size));
                 TextView datetime = (TextView) findViewById(R.id.image_date_taken);
                 datetime.setText(exif.getAttribute(ExifInterface.TAG_DATETIME));
                 TextView camera = (TextView) findViewById(R.id.image_camera);
