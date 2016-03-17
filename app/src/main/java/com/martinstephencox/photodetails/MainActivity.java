@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Location;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
@@ -143,18 +144,16 @@ public class MainActivity extends AppCompatActivity {
                 flash.setText(exif.getAttribute(ExifInterface.TAG_FLASH));
                 TextView coords = (TextView) findViewById(R.id.image_flash);
                 //coords.setText(exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE) + " " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
-                System.out.println("Original Pos: " + exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE) + " " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE));
 
                 String latString = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
                 String lonString = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
                 String latRef = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
                 String lonRef = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
 
-
                 if (!latString.equals(null) && !lonString.equals(null) && !latRef.equals(null) && !lonRef.equals(null)) {
 
-                    double lat = 0;
-                    double lon = 0;
+                    Float lat = 0f;
+                    Float lon = 0f;
 
                     if (latRef.equals("N")) {
                         //North of equator, positive value
@@ -174,10 +173,6 @@ public class MainActivity extends AppCompatActivity {
 
                     final MapView gMap = (MapView) findViewById(R.id.map);
 
-                    //origPosMarker = new MarkerOptions().position(new LatLng(lat, lon)).title(getString(R.string.map_original_position));
-
-                    //newPosMarker = new MarkerOptions().position(new LatLng(61.22, 11.56)).title(getString(R.string.map_new_position)).visible(true).draggable(true).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-
                     if (addedMarker == false) {
                         posMarker = gMap.getMap().addMarker(posMarkerOptions);
                         posMarker.setTitle(getString(R.string.map_position));
@@ -186,6 +181,10 @@ public class MainActivity extends AppCompatActivity {
 
                     posMarker.setVisible(true);
                     posMarker.setPosition(new LatLng(lat, lon));
+
+                    System.out.println("LOAD IMAGE COORDS DMS: " + latString + " # " + lonString);
+                    System.out.println("LOAD IMAGE COORDS DEGREES: " + lat + " # " + lon);
+                    System.out.println("REF LAT: " + exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF) + " # REF LON: " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF));
 
                     //TODO ADD MAP TOUCH EVENT TO MOVE THE newPosMarker IN ADDITION TO BEING ABLE TO DRAG IT
 
@@ -201,44 +200,69 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createErrorDialog(int title, int message) {
-    //Couldn't load the image, display an error message
-    new AlertDialog.Builder(MainActivity.this)
-            .setTitle(title)
-            .setMessage(message)
-            .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    // do nothing
-                }
-            })
-            .setIcon(android.R.drawable.ic_dialog_alert)
-            .show();
+        //Couldn't load the image, display an error message
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle(title)
+                .setMessage(message)
+                .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
-    public Double toDegrees(String ref) {
+    public Float toDegrees(String ref) {
+        //EXIF data should is in DMS format, need to convert from DMS to degrees for Google Maps
         //Credit to http://android-er.blogspot.co.uk/2010/01/convert-exif-gps-info-to-degree-format.html
-        Double result = null;
+        Float result = null;
         String[] DMS = ref.split(",", 3);
 
         String[] stringD = DMS[0].split("/", 2);
         Double D0 = new Double(stringD[0]);
         Double D1 = new Double(stringD[1]);
-        Double FloatD = D0/D1;
+        Double FloatD = D0 / D1;
 
         String[] stringM = DMS[1].split("/", 2);
         Double M0 = new Double(stringM[0]);
         Double M1 = new Double(stringM[1]);
-        Double FloatM = M0/M1;
+        Double FloatM = M0 / M1;
 
         String[] stringS = DMS[2].split("/", 2);
         Double S0 = new Double(stringS[0]);
         Double S1 = new Double(stringS[1]);
-        Double FloatS = S0/S1;
+        Double FloatS = S0 / S1;
 
-        result = new Double(FloatD + (FloatM/60) + (FloatS/3600));
+        result = new Float(FloatD + (FloatM / 60) + (FloatS / 3600));
 
         return result;
     }
 
+    public String toDMS(Double location) {
+        //EXIF data should be in DMS format, need to convert back from degrees to DMS
+        String result = "";
+        String locationString = location.toString();
+        String[] degrees = locationString.split("\\.");
+
+        String dd = degrees[0];
+
+        degrees[1] = "0." + degrees[1];
+
+        Double mmDouble = 60 * Double.parseDouble(degrees[1]);
+
+        String mm = mmDouble.toString();
+        String[] mmSplit = mm.split("\\.");
+
+        mmSplit[1] = "0." + mmSplit[1];
+
+        Double ssDouble = 60 * Double.parseDouble(mmSplit[1]);
+        String ss = ssDouble.toString();
+
+        result = dd + mm + ss;
+
+        return "";
+    }
 
     public static String getRealPathFromURI(Context context, Uri uri){
         Cursor cursor = null;
@@ -291,8 +315,39 @@ public class MainActivity extends AppCompatActivity {
             //Save the modified image
             exif.setAttribute(ExifInterface.TAG_MAKE, ((TextView) findViewById(R.id.image_camera)).getText().toString());
             if (posMarker != null) {
-                exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, String.valueOf(posMarker.getPosition().longitude));
-                exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, String.valueOf(posMarker.getPosition().latitude));
+
+                //String DMSLat = toDMS(posMarker.getPosition().latitude);
+                //String DMSLon = toDMS(posMarker.getPosition().longitude);
+
+                //exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, String.valueOf(posMarker.getPosition().latitude).substring(0, 8));
+                //exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, String.valueOf(posMarker.getPosition().longitude).substring(0, 8));
+
+                //exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, DMSLat);
+                //exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, DMSLon);
+
+                final Location loc = new Location("");
+
+                String lat = loc.convert(posMarker.getPosition().latitude, Location.FORMAT_SECONDS);
+                String lon = loc.convert(posMarker.getPosition().longitude, Location.FORMAT_SECONDS);
+
+                exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, lat);
+                exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, lon);
+
+                if (posMarker.getPosition().latitude > 0) {
+                    exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "N");
+                } else {
+                    exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "S");
+                }
+
+                if (posMarker.getPosition().longitude > 0) {
+                    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "E");
+                } else {
+                    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "W");
+                }
+
+                System.out.println("SAVE IMAGE COORDS DMS: " + lat + " # " + lon);
+                System.out.println("SAVE IMAGE COORDS DEGREES: " + String.valueOf(posMarker.getPosition().latitude).substring(0, 8) + " # " + String.valueOf(posMarker.getPosition().longitude).substring(0, 8));
+                System.out.println("REF LAT: " + exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF) + " # REF LON: " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF));
 
                 //TODO SAVING COORDS DOESN'T SAVE CORRECT COORDS
 
