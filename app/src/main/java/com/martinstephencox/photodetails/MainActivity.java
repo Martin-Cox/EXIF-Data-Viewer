@@ -187,13 +187,15 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("REF LAT: " + exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF) + " # REF LON: " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF));
 
                     //TODO ADD MAP TOUCH EVENT TO MOVE THE posMarker
-                    //DRAGGING THE MARKER DOESN'T ACTUALLY CHANGE THE POSITION!
+                    //TODO DRAGGING THE MARKER DOESN'T ACTUALLY CHANGE THE POSITION!
 
                 }
 
             } catch (Exception e) {
                 createErrorDialog(android.R.string.dialog_alert_title, R.string.photo_selector_error_text);
             }
+        } else if (resultCode == RESULT_CANCELED){
+            //User canceled operation
         } else {
             //Couldn't load the image, display an error message
             createErrorDialog(android.R.string.dialog_alert_title, R.string.photo_selector_error_text);
