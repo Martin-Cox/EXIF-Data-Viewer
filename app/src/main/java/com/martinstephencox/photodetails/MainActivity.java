@@ -147,10 +147,10 @@ public class MainActivity extends AppCompatActivity {
                 String latRef = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
                 String lonRef = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
 
-                if (latString != null && lonString != null && latRef != null && lonRef != null ) {
+                Float lat = 0f;
+                Float lon = 0f;
 
-                    Float lat = 0f;
-                    Float lon = 0f;
+                if (latString != null && lonString != null && latRef != null && lonRef != null ) {
 
                     if (latRef.equals("N")) {
                         //North of equator, positive value
@@ -167,30 +167,30 @@ public class MainActivity extends AppCompatActivity {
                         //West of prime meridian, negative value
                         lon = 0 - toDegrees(lonString);
                     }
-
-                    final MapView gMap = (MapView) findViewById(R.id.map);
-
-                    if (addedMarker == false) {
-                        posMarker = gMap.getMap().addMarker(posMarkerOptions);
-                        posMarker.setTitle(getString(R.string.map_position));
-                        addedMarker = true;
-                    }
-
-                    posMarker.setVisible(true);
-                    posMarker.setPosition(new LatLng(lat, lon));
-
-                    GoogleMap gMapObj = gMap.getMap();
-
-                    gMapObj.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                        @Override
-                        public void onMapClick(LatLng latLng) {
-                            posMarker.setPosition(latLng);
-                            displayCoordsInDegrees();
-                        }
-                    });
-
-                    displayCoordsInDegrees();
                 }
+
+                final MapView gMap = (MapView) findViewById(R.id.map);
+
+                if (addedMarker == false) {
+                    posMarker = gMap.getMap().addMarker(posMarkerOptions);
+                    posMarker.setTitle(getString(R.string.map_position));
+                    addedMarker = true;
+                }
+
+                posMarker.setVisible(true);
+                posMarker.setPosition(new LatLng(lat, lon));
+
+                GoogleMap gMapObj = gMap.getMap();
+
+                gMapObj.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        posMarker.setPosition(latLng);
+                        displayCoordsInDegrees();
+                    }
+                });
+
+                displayCoordsInDegrees();
 
             } catch (Exception e) {
                 createErrorDialog(android.R.string.dialog_alert_title, R.string.photo_selector_error_text);
@@ -330,6 +330,11 @@ public class MainActivity extends AppCompatActivity {
             //Save the modified image
             exif.setAttribute(ExifInterface.TAG_MAKE, ((TextView) findViewById(R.id.image_camera)).getText().toString());
             if (posMarker != null) {
+
+                TextView latitude = (TextView) findViewById(R.id.image_latitude);
+                TextView longitude = (TextView) findViewById(R.id.image_longitude);
+
+                //Use text view values instead of posMarker values
                 String lat = toDMS(posMarker.getPosition().latitude);
                 String lon = toDMS(posMarker.getPosition().longitude);
 
@@ -411,7 +416,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-                //TODO MOVE posMarker TO 0.0 0.0 TO CLEAR GPS DATA
+                TextView latitude = (TextView) findViewById(R.id.image_latitude);
+                TextView longitude = (TextView) findViewById(R.id.image_longitude);
+
+                posMarker.setPosition(new LatLng(0,0));
+                latitude.setText("0.000");
+                longitude.setText("0.000");
 
                 return true;
             } catch (Exception e) {
