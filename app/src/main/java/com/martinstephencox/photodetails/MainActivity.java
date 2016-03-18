@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 String latRef = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
                 String lonRef = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
 
-                if (!latString.equals(null) && !lonString.equals(null) && !latRef.equals(null) && !lonRef.equals(null)) {
+                if (latString != null && lonString != null && latRef != null && lonRef != null ) {
 
                     Float lat = 0f;
                     Float lon = 0f;
