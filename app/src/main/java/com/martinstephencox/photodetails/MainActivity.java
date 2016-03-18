@@ -153,8 +153,6 @@ public class MainActivity extends AppCompatActivity {
                 exposure.setText(exif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME));
                 TextView flash = (TextView) findViewById(R.id.image_flash);
                 flash.setText(exif.getAttribute(ExifInterface.TAG_FLASH));
-                TextView latitude = (TextView) findViewById(R.id.image_latitude);
-                TextView longitude = (TextView) findViewById(R.id.image_longitude);
 
                 String latString = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
                 String lonString = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
@@ -197,18 +195,21 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("LOAD IMAGE COORDS DEGREES: " + lat + " # " + lon);
                     System.out.println("REF LAT: " + exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF) + " # REF LON: " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF));
 
-                    DecimalFormat formatter = new DecimalFormat("#.000");
+                    GoogleMap gMapObj = gMap.getMap();
 
-                    String latFormat = formatter.format(posMarker.getPosition().latitude);
-                    String lonFormat = formatter.format(posMarker.getPosition().longitude);
+                    gMapObj.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                        @Override
+                        public void onMapClick(LatLng latLng) {
+                            posMarker.setPosition(latLng);
 
-                    latitude.setText(latFormat);  //Use posMarker location as field actually reflects marker position
-                    longitude.setText(lonFormat);  //Use posMarker location as field actually reflects marker position
+                            displayCoordsInDegrees();
+                        }
+                    });
 
-                    //TODO ADD MAP TOUCH EVENT TO MOVE THE posMarker
-                    //TODO DRAGGING THE MARKER DOESN'T ACTUALLY CHANGE THE POSITION!
-                    //TODO IN MAP TOUCH EVENT CHANGE coordsDegrees TO MARKER NEW POS
+                    displayCoordsInDegrees();
 
+                    //TODO LOAD IMAGE DMS TO DEGREES DOESNT SEEM TO WORK PROPERLY FOR NEGATIVE LAT LONG VALUES IT PUSHES IT BACK TO VERY SMALL NEG VALUE (< 1)
+                    //TODO THIS IS BECAUSE IT SETS ALL NUMBERS BEFORE . TO ) E.G -86.123 BECOMES -0.123 ON LOAD!!!
                 }
 
             } catch (Exception e) {
@@ -234,6 +235,19 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+    }
+
+    public void displayCoordsInDegrees() {
+        DecimalFormat formatter = new DecimalFormat("0.000");
+
+        String latFormat = formatter.format(posMarker.getPosition().latitude);
+        String lonFormat = formatter.format(posMarker.getPosition().longitude);
+
+        TextView latitude = (TextView) findViewById(R.id.image_latitude);
+        TextView longitude = (TextView) findViewById(R.id.image_longitude);
+
+        latitude.setText(latFormat);  //Use posMarker location as field actually reflects marker position
+        longitude.setText(lonFormat);  //Use posMarker location as field actually reflects marker position
     }
 
     public Float toDegrees(String ref) {

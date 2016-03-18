@@ -2,8 +2,10 @@ package com.martinstephencox.photodetails;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,7 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * Use the {@link MapsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
+public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     MapView gMapView;
     GoogleMap gMap = null;
@@ -78,6 +80,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         //gMapView.getMapAsync(this);
 
         return view;
+
+        /*gMap.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                View coordLayout = findViewById(R.id.main_content);
+                Snackbar successSnackbar = Snackbar.make(coordLayout, "Touched", Snackbar.LENGTH_SHORT);
+                successSnackbar.show();
+                return true;
+            }
+        });*/
     }
 
     @Override
@@ -85,10 +97,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         gMap = map;
     }
 
-    @Override
-    public void onMapClick (LatLng point) {
-
-    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
