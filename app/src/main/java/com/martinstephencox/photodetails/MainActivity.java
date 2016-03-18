@@ -1,21 +1,15 @@
 package com.martinstephencox.photodetails;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.location.Location;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.provider.OpenableColumns;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -29,14 +23,11 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -44,14 +35,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
@@ -191,25 +179,17 @@ public class MainActivity extends AppCompatActivity {
                     posMarker.setVisible(true);
                     posMarker.setPosition(new LatLng(lat, lon));
 
-                    System.out.println("LOAD IMAGE COORDS DMS: " + latString + " # " + lonString);
-                    System.out.println("LOAD IMAGE COORDS DEGREES: " + lat + " # " + lon);
-                    System.out.println("REF LAT: " + exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF) + " # REF LON: " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF));
-
                     GoogleMap gMapObj = gMap.getMap();
 
                     gMapObj.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                         @Override
                         public void onMapClick(LatLng latLng) {
                             posMarker.setPosition(latLng);
-
                             displayCoordsInDegrees();
                         }
                     });
 
                     displayCoordsInDegrees();
-
-                    //TODO LOAD IMAGE DMS TO DEGREES DOESNT SEEM TO WORK PROPERLY FOR NEGATIVE LAT LONG VALUES IT PUSHES IT BACK TO VERY SMALL NEG VALUE (< 1)
-                    //TODO THIS IS BECAUSE IT SETS ALL NUMBERS BEFORE . TO ) E.G -86.123 BECOMES -0.123 ON LOAD!!!
                 }
 
             } catch (Exception e) {
@@ -253,22 +233,23 @@ public class MainActivity extends AppCompatActivity {
     public Float toDegrees(String ref) {
         //EXIF data should is in DMS format, need to convert from DMS to degrees for Google Maps
         //Credit to http://android-er.blogspot.co.uk/2010/01/convert-exif-gps-info-to-degree-format.html
+
         Float result = null;
         String[] DMS = ref.split(",", 3);
 
         String[] stringD = DMS[0].split("/", 2);
-        Double D0 = new Double(stringD[0]);
-        Double D1 = new Double(stringD[1]);
+        Double D0 = Double.valueOf(stringD[0]);
+        Double D1 = Double.valueOf(stringD[1]);
         Double FloatD = D0 / D1;
 
         String[] stringM = DMS[1].split("/", 2);
-        Double M0 = new Double(stringM[0]);
-        Double M1 = new Double(stringM[1]);
+        Double M0 = Double.valueOf(stringM[0]);
+        Double M1 = Double.valueOf(stringM[1]);
         Double FloatM = M0 / M1;
 
         String[] stringS = DMS[2].split("/", 2);
-        Double S0 = new Double(stringS[0]);
-        Double S1 = new Double(stringS[1]);
+        Double S0 = Double.valueOf(stringS[0]);
+        Double S1 = Double.valueOf(stringS[1]);
         Double FloatS = S0 / S1;
 
         result = new Float(FloatD + (FloatM / 60) + (FloatS / 3600));
@@ -322,16 +303,35 @@ public class MainActivity extends AppCompatActivity {
         return filePath;
     }
 
+    public String toDMS(double coords) {
+        //Need to convert from DD to DMS format for EXIF
+
+        int iDegrees, iMinutes, iSeconds;
+        String result, sDegrees, sMinutes, sSeconds;
+
+        if (coords < 0) {
+            coords = -coords;   //Make negative values into positive
+        }
+
+        iDegrees = ((int) coords);
+        sDegrees = String.valueOf(iDegrees) + "/1,";
+
+        iMinutes = (int) (60 * (coords % 1));
+        sMinutes = String.valueOf(iMinutes) + "/1,";
+
+        iSeconds = (int) (60000 * (iMinutes % 1));
+        sSeconds = String.valueOf(iSeconds) + "/1000";
+
+        return sDegrees + sMinutes + sSeconds;
+    }
+
     public boolean saveImage() {
         try {
             //Save the modified image
             exif.setAttribute(ExifInterface.TAG_MAKE, ((TextView) findViewById(R.id.image_camera)).getText().toString());
             if (posMarker != null) {
-
-                final Location loc = new Location("");
-
-                String lat = loc.convert(posMarker.getPosition().latitude, Location.FORMAT_SECONDS);
-                String lon = loc.convert(posMarker.getPosition().longitude, Location.FORMAT_SECONDS);
+                String lat = toDMS(posMarker.getPosition().latitude);
+                String lon = toDMS(posMarker.getPosition().longitude);
 
                 exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, lat);
                 exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, lon);
@@ -347,11 +347,6 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "W");
                 }
-
-                System.out.println("SAVE IMAGE COORDS DMS: " + lat + " # " + lon);
-                System.out.println("SAVE IMAGE COORDS DEGREES: " + String.valueOf(posMarker.getPosition().latitude).substring(0, 8) + " # " + String.valueOf(posMarker.getPosition().longitude).substring(0, 8));
-                System.out.println("REF LAT: " + exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF) + " # REF LON: " + exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF));
-
             }
             exif.saveAttributes();
             View coordLayout = findViewById(R.id.main_content);
