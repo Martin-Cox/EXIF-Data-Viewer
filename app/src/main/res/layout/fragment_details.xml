@@ -308,6 +308,32 @@
                     android:paddingBottom="5dp"/>
             </TableRow>
 
+            <!--Focal length-->
+            <TableRow>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/EXIF_focal_length"
+                    android:id="@+id/label_EXIF_focal_length"
+                    android:layout_column="1"
+                    android:layout_weight="0.35"
+                    android:paddingBottom="5dp"/>
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/EXIF_value_unknown"
+                    android:id="@+id/image_focal_length"
+                    android:layout_column="2"
+                    android:layout_weight="0.65"
+                    android:paddingBottom="5dp"/>
+            </TableRow>
+
             <!--Location Details Header-->
             <TableRow>
                 android:layout_width="match_parent"

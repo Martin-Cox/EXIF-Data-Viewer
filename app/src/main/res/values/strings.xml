@@ -40,6 +40,7 @@
     <string name="EXIF_lens">Lens: </string>
     <string name="EXIF_exposure">Exposure: </string>
     <string name="EXIF_flash">Flash: </string>
+    <string name="EXIF_focal_length">Focal Length: </string>
     <string name="EXIF_latitude">Latitude: </string>
     <string name="EXIF_longitude">Longitude: </string>
 

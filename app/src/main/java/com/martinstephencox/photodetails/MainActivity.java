@@ -141,6 +141,8 @@ public class MainActivity extends AppCompatActivity {
                 exposure.setText(exif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME));
                 TextView flash = (TextView) findViewById(R.id.image_flash);
                 flash.setText(exif.getAttribute(ExifInterface.TAG_FLASH));
+                TextView focalLength = (TextView) findViewById(R.id.image_focal_length);
+                focalLength.setText(exif.getAttribute(ExifInterface.TAG_FOCAL_LENGTH));
 
                 String latString = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
                 String lonString = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
@@ -328,7 +330,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean saveImage() {
         try {
             //Save the modified image
+            exif.setAttribute(ExifInterface.TAG_DATETIME, ((TextView) findViewById(R.id.image_date_taken)).getText().toString());
             exif.setAttribute(ExifInterface.TAG_MAKE, ((TextView) findViewById(R.id.image_camera)).getText().toString());
+            exif.setAttribute(ExifInterface.TAG_APERTURE, ((TextView) findViewById(R.id.image_lens)).getText().toString());
+            exif.setAttribute(ExifInterface.TAG_EXPOSURE_TIME, ((TextView) findViewById(R.id.image_exposure)).getText().toString());
+            exif.setAttribute(ExifInterface.TAG_FLASH, ((TextView) findViewById(R.id.image_flash)).getText().toString());
+            exif.setAttribute(ExifInterface.TAG_FOCAL_LENGTH, ((TextView) findViewById(R.id.image_focal_length)).getText().toString());
+
             if (posMarker != null) {
 
                 TextView latitude = (TextView) findViewById(R.id.image_latitude);
@@ -411,7 +419,7 @@ public class MainActivity extends AppCompatActivity {
                     for (int j = 0; j < tableRow.getChildCount(); j++) {
                         View view = tableRow.getChildAt(j);
                         if (view instanceof EditText) {
-                            ((EditText) view).setText("");
+                            ((EditText) view).setText(" ");
                         }
                     }
                 }
