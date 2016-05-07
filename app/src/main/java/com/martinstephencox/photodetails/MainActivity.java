@@ -156,48 +156,8 @@ public class MainActivity extends AppCompatActivity {
                 iLatFloat = 0f;
                 iLonFloat = 0f;
 
-                if (iLat != null && iLon != null && iLatRef != null && iLonRef != null ) {
-
-                    if (iLatRef.equals("N")) {
-                        //North of equator, positive value
-                        iLatFloat = toDegrees(iLat);
-                    } else {
-                        //South of equator, negative value
-                        iLatFloat = 0 - toDegrees(iLat);
-                    }
-
-                    if (iLonRef.equals("E")) {
-                        //East of prime meridian, positive value
-                        iLonFloat = toDegrees(iLon);
-                    } else {
-                        //West of prime meridian, negative value
-                        iLonFloat = 0 - toDegrees(iLon);
-                    }
-                }
-
-                final MapView gMap = (MapView) findViewById(R.id.map);
-
-                if (addedMarker == false) {
-                    posMarker = gMap.getMap().addMarker(posMarkerOptions);
-                    posMarker.setTitle(getString(R.string.map_position));
-                    addedMarker = true;
-                }
-
-                posMarker.setVisible(true);
-                posMarker.setPosition(new LatLng(iLatFloat, iLonFloat));
-
-                GoogleMap gMapObj = gMap.getMap();
-
-                gMapObj.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                    @Override
-                    public void onMapClick(LatLng latLng) {
-                        posMarker.setPosition(latLng);
-                        displayCoordsInDegrees();
-                    }
-                });
-
+                addMapMarker();
                 displayCoordsInDegrees();
-
             } catch (Exception e) {
                 createErrorDialog(android.R.string.dialog_alert_title, R.string.photo_selector_error_text);
             }
@@ -239,6 +199,48 @@ public class MainActivity extends AppCompatActivity {
             TextView focalLength = (TextView) findViewById(R.id.image_focal_length);
             focalLength.setText(exif.getAttribute(ExifInterface.TAG_FOCAL_LENGTH));
         }
+    }
+
+    public void addMapMarker() {
+        if (iLat != null && iLon != null && iLatRef != null && iLonRef != null ) {
+
+            if (iLatRef.equals("N")) {
+                //North of equator, positive value
+                iLatFloat = toDegrees(iLat);
+            } else {
+                //South of equator, negative value
+                iLatFloat = 0 - toDegrees(iLat);
+            }
+
+            if (iLonRef.equals("E")) {
+                //East of prime meridian, positive value
+                iLonFloat = toDegrees(iLon);
+            } else {
+                //West of prime meridian, negative value
+                iLonFloat = 0 - toDegrees(iLon);
+            }
+        }
+
+        final MapView gMap = (MapView) findViewById(R.id.map);
+
+        if (addedMarker == false) {
+            posMarker = gMap.getMap().addMarker(posMarkerOptions);
+            posMarker.setTitle(getString(R.string.map_position));
+            addedMarker = true;
+        }
+
+        posMarker.setVisible(true);
+        posMarker.setPosition(new LatLng(iLatFloat, iLonFloat));
+
+        GoogleMap gMapObj = gMap.getMap();
+
+        gMapObj.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                posMarker.setPosition(latLng);
+                displayCoordsInDegrees();
+            }
+        });
     }
 
     public void createErrorDialog(int title, int message) {
@@ -524,6 +526,8 @@ public class MainActivity extends AppCompatActivity {
 
         drawImage();
         populateFields(null, populateMode.REPOPULATE);
+        addMapMarker();
+        displayCoordsInDegrees();
     }
 
     /**
