@@ -50,6 +50,23 @@ public class MainActivity extends AppCompatActivity {
     MarkerOptions posMarkerOptions = new MarkerOptions().position(new LatLng(0, 0)).visible(false).draggable(false);
     Marker posMarker;
 
+    /*Image details for restoring state e.g. on rotation*/
+    Uri iURI = Uri.EMPTY;
+    String iEXIFPath = "";
+    String iFilename = "";
+    String iWidth = "";
+    String iHeight = "";
+    Long iSize = 0l;
+    String iLat = "";
+    String iLon = "";
+    String iLatRef = "";
+    String iLonRef = "";
+    Float iLatFloat = 0.0f;
+    Float iLonFloat = 0.0f;
+
+    public enum populateMode {
+        LOAD_IMAGE, REPOPULATE
+    }
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -102,8 +119,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             //Successfully selected an image, load it into ImageView using Glide
-            ImageView imageView = (ImageView) findViewById(R.id.photo);
-            imageView.setVisibility(View.VISIBLE);
+
             TableRow imageRow = (TableRow) findViewById(R.id.image_row);
             imageRow.setBackgroundColor(getResources().getColor(R.color.colorBlack));
             imageRow.setVisibility(View.VISIBLE);
@@ -111,63 +127,50 @@ public class MainActivity extends AppCompatActivity {
             TableLayout table = (TableLayout) findViewById(R.id.layout_table);
             table.removeView(messageRow);
             try {
-                Glide.with(MainActivity.this).load(data.getData()).fitCenter().into(imageView);
-                String exifPath = getRealPathFromURI(this.getApplicationContext(), data.getData());
-                exif = new ExifInterface(exifPath);
+
+                iURI = data.getData();
+
+                drawImage();
+
+                iEXIFPath = getRealPathFromURI(this.getApplicationContext(), iURI);
+                exif = new ExifInterface(iEXIFPath);
 
                 //Getting all the Exif attributes
+                String[] filepathComponents = iEXIFPath.split("/");
+                iFilename = filepathComponents[filepathComponents.length-1];
 
-                String[] filepathComponents = exifPath.split("/");
+                File image = new File(iEXIFPath);
+                iSize = image.length();
+                iSize = iSize/1024;
 
-                File image = new File(exifPath);
-                Long length = image.length();
-                length = length/1024;
+                iWidth = exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
+                iHeight = exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH);
+                iLat = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+                iLon = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+                iLatRef = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
+                iLonRef = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
 
-                TextView filename = (TextView) findViewById(R.id.image_filename);
-                filename.setText(filepathComponents[filepathComponents.length-1]);
-                TextView width = (TextView) findViewById(R.id.image_width);
-                width.setText(exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH));
-                TextView height = (TextView) findViewById(R.id.image_height);
-                height.setText(exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH));
-                TextView size = (TextView) findViewById(R.id.image_size_bytes);
-                size.setText(length.toString() + getString(R.string.EXIF_size));
-                TextView datetime = (TextView) findViewById(R.id.image_date_taken);
-                datetime.setText(exif.getAttribute(ExifInterface.TAG_DATETIME));
-                TextView camera = (TextView) findViewById(R.id.image_camera);
-                camera.setText(exif.getAttribute(ExifInterface.TAG_MAKE));
-                TextView lens = (TextView) findViewById(R.id.image_lens);
-                lens.setText(exif.getAttribute(ExifInterface.TAG_APERTURE));
-                TextView exposure = (TextView) findViewById(R.id.image_exposure);
-                exposure.setText(exif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME));
-                TextView flash = (TextView) findViewById(R.id.image_flash);
-                flash.setText(exif.getAttribute(ExifInterface.TAG_FLASH));
-                TextView focalLength = (TextView) findViewById(R.id.image_focal_length);
-                focalLength.setText(exif.getAttribute(ExifInterface.TAG_FOCAL_LENGTH));
+                populateFields(exif, populateMode.LOAD_IMAGE);
 
-                String latString = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
-                String lonString = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
-                String latRef = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
-                String lonRef = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
+                iLatFloat = 0f;
+                iLonFloat = 0f;
 
-                Float lat = 0f;
-                Float lon = 0f;
+                if (iLat != null && iLon != null && iLatRef != null && iLonRef != null ) {
 
-                if (latString != null && lonString != null && latRef != null && lonRef != null ) {
-
-                    if (latRef.equals("N")) {
+                    if (iLatRef.equals("N")) {
                         //North of equator, positive value
-                        lat = toDegrees(latString);
+                        iLatFloat = toDegrees(iLat);
                     } else {
                         //South of equator, negative value
-                        lat = 0 - toDegrees(latString);
+                        iLatFloat = 0 - toDegrees(iLat);
                     }
 
-                    if (lonRef.equals("E")) {
+                    if (iLonRef.equals("E")) {
                         //East of prime meridian, positive value
-                        lon = toDegrees(lonString);
+                        iLonFloat = toDegrees(iLon);
                     } else {
                         //West of prime meridian, negative value
-                        lon = 0 - toDegrees(lonString);
+                        iLonFloat = 0 - toDegrees(iLon);
                     }
                 }
 
@@ -180,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 posMarker.setVisible(true);
-                posMarker.setPosition(new LatLng(lat, lon));
+                posMarker.setPosition(new LatLng(iLatFloat, iLonFloat));
 
                 GoogleMap gMapObj = gMap.getMap();
 
@@ -205,6 +208,38 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void drawImage() {
+        ImageView imageView = (ImageView) findViewById(R.id.photo);
+        imageView.setVisibility(View.VISIBLE);
+        Glide.with(MainActivity.this).load(iURI).fitCenter().into(imageView);
+    }
+
+    public void populateFields(ExifInterface exif, populateMode mode) {
+        TextView filename = (TextView) findViewById(R.id.image_filename);
+        filename.setText(iFilename);
+        TextView width = (TextView) findViewById(R.id.image_width);
+        width.setText(iWidth);
+        TextView height = (TextView) findViewById(R.id.image_height);
+        height.setText(iHeight);
+        TextView size = (TextView) findViewById(R.id.image_size_bytes);
+        size.setText(iSize.toString() + getString(R.string.EXIF_size));
+
+        if (mode.equals(populateMode.LOAD_IMAGE)) {
+            TextView datetime = (TextView) findViewById(R.id.image_date_taken);
+            datetime.setText(exif.getAttribute(ExifInterface.TAG_DATETIME));
+            TextView camera = (TextView) findViewById(R.id.image_camera);
+            camera.setText(exif.getAttribute(ExifInterface.TAG_MAKE));
+            TextView lens = (TextView) findViewById(R.id.image_lens);
+            lens.setText(exif.getAttribute(ExifInterface.TAG_APERTURE));
+            TextView exposure = (TextView) findViewById(R.id.image_exposure);
+            exposure.setText(exif.getAttribute(ExifInterface.TAG_EXPOSURE_TIME));
+            TextView flash = (TextView) findViewById(R.id.image_flash);
+            flash.setText(exif.getAttribute(ExifInterface.TAG_FLASH));
+            TextView focalLength = (TextView) findViewById(R.id.image_focal_length);
+            focalLength.setText(exif.getAttribute(ExifInterface.TAG_FOCAL_LENGTH));
+        }
+    }
+
     public void createErrorDialog(int title, int message) {
         //Couldn't load the image, display an error message
         new AlertDialog.Builder(MainActivity.this)
@@ -212,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
                 .setMessage(message)
                 .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
+                        //Do nothing
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
@@ -440,6 +475,49 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+        String stringURI = iURI.toString();
+        savedInstanceState.putString("URI", stringURI);
+        savedInstanceState.putString("EXIF_PATH", iEXIFPath);
+        savedInstanceState.putString("FILENAME", iFilename);
+        savedInstanceState.putString("WIDTH", iWidth);
+        savedInstanceState.putString("HEIGHT", iHeight);
+        savedInstanceState.putLong("SIZE", iSize);
+        savedInstanceState.putString("LAT", iLat);
+        savedInstanceState.putString("LON", iLon);
+        savedInstanceState.putString("LAT_REF", iLatRef);
+        savedInstanceState.putString("LON_REF", iLonRef);
+        savedInstanceState.putFloat("LAT_FLOAT", iLatFloat);
+        savedInstanceState.putFloat("LON_FLOAT", iLonFloat);
+
+        //Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can restore the view hierarchy
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // Restore state members from saved instance
+        String stringURI = savedInstanceState.getString("URI");
+        iURI = Uri.parse(stringURI);
+        iEXIFPath = savedInstanceState.getString("EXIF_PATH");
+        iFilename = savedInstanceState.getString("FILENAME");
+        iWidth = savedInstanceState.getString("WIDTH");
+        iHeight = savedInstanceState.getString("HEIGHT");
+        iSize = savedInstanceState.getLong("SIZE");
+        iLat = savedInstanceState.getString("LAT");
+        iLon = savedInstanceState.getString("LON");
+        iLatRef = savedInstanceState.getString("LAT_REF");
+        iLonRef = savedInstanceState.getString("LON_REF");
+        iLatFloat = savedInstanceState.getFloat("LAT_FLOAT");
+        iLonFloat = savedInstanceState.getFloat("LON_FLOAT");
+
+        drawImage();
+        populateFields(null, populateMode.REPOPULATE);
+    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
