@@ -169,12 +169,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Draws the users selected image into the ImageView
+     */
     public void drawImage() {
         ImageView imageView = (ImageView) findViewById(R.id.photo);
         imageView.setVisibility(View.VISIBLE);
         Glide.with(MainActivity.this).load(iURI).fitCenter().into(imageView);
     }
 
+    /**
+     * Populates the Details fragments fields with EXIF data
+     *
+     * @param exif The Exif Interface for the users selected image
+     * @param mode Used to determine what fields will be populated. When repopulating fields due to Activity State change editable text fields doen't need to be changed
+     */
     public void populateFields(ExifInterface exif, populateMode mode) {
         TextView filename = (TextView) findViewById(R.id.image_filename);
         filename.setText(iFilename);
@@ -201,6 +210,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Adds a marker to the Google Maps fragment at the users selected images GPS coordinates
+     */
     public void addMapMarker() {
         if (iLat != null && iLon != null && iLatRef != null && iLonRef != null ) {
 
@@ -267,6 +279,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Creates an error dialog
+     *
+     * @param title The ID of the string resource for the error message dialog title
+     * @param message The ID of the string resource for the error message dialog message
+     */
     public void createErrorDialog(int title, int message) {
         //Couldn't load the image, display an error message
         new AlertDialog.Builder(MainActivity.this)
@@ -281,6 +299,9 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
+    /**
+     * Displayes the users selected images GPS coordinates in user friendly degrees on the Details fragment
+     */
     public void displayCoordsInDegrees() {
         DecimalFormat formatter = new DecimalFormat("0.000");
 
@@ -294,6 +315,12 @@ public class MainActivity extends AppCompatActivity {
         longitude.setText(lonFormat);  //Use posMarker location as field actually reflects marker position
     }
 
+    /**
+     * Converts a DMS coordinate (E.g. from the EXIF Interface) to Degrees
+     *
+     * @param ref The DMS reference for a coordinate
+     * @return A Float containing the converted coordinate
+     */
     public Float toDegrees(String ref) {
         //EXIF data should is in DMS format, need to convert from DMS to degrees for Google Maps
         //Credit to http://android-er.blogspot.co.uk/2010/01/convert-exif-gps-info-to-degree-format.html
@@ -321,6 +348,41 @@ public class MainActivity extends AppCompatActivity {
         return result;
     }
 
+    /**
+     * Converts degree coordinates to DMS format
+     *
+     * @param coords The coordinates in degrees
+     * @return A String containing the DMS of the given degrees
+     */
+    public String toDMS(double coords) {
+        //Need to convert from DD to DMS format for EXIF
+
+        int iDegrees, iMinutes, iSeconds;
+        String result, sDegrees, sMinutes, sSeconds;
+
+        if (coords < 0) {
+            coords = -coords;   //Make negative values into positive
+        }
+
+        iDegrees = ((int) coords);
+        sDegrees = String.valueOf(iDegrees) + "/1,";
+
+        iMinutes = (int) (60 * (coords % 1));
+        sMinutes = String.valueOf(iMinutes) + "/1,";
+
+        iSeconds = (int) (60000 * (iMinutes % 1));
+        sSeconds = String.valueOf(iSeconds) + "/1000";
+
+        return sDegrees + sMinutes + sSeconds;
+    }
+
+    /**
+     * Gets the "real" file path from a URI
+     *
+     * @param context The context
+     * @param uri The URI of the file
+     * @return A string containing the filepath of the given file
+     */
     public static String getRealPathFromURI(Context context, Uri uri){
         Cursor cursor = null;
         String filePath = "";
@@ -367,28 +429,11 @@ public class MainActivity extends AppCompatActivity {
         return filePath;
     }
 
-    public String toDMS(double coords) {
-        //Need to convert from DD to DMS format for EXIF
-
-        int iDegrees, iMinutes, iSeconds;
-        String result, sDegrees, sMinutes, sSeconds;
-
-        if (coords < 0) {
-            coords = -coords;   //Make negative values into positive
-        }
-
-        iDegrees = ((int) coords);
-        sDegrees = String.valueOf(iDegrees) + "/1,";
-
-        iMinutes = (int) (60 * (coords % 1));
-        sMinutes = String.valueOf(iMinutes) + "/1,";
-
-        iSeconds = (int) (60000 * (iMinutes % 1));
-        sSeconds = String.valueOf(iSeconds) + "/1000";
-
-        return sDegrees + sMinutes + sSeconds;
-    }
-
+    /**
+     * Attempts to save the given image by overwriting the original image file
+     *
+     * @return A boolean containing the value for if the operation was successful or not
+     */
     public boolean saveImage() {
         try {
             //Save the modified image
