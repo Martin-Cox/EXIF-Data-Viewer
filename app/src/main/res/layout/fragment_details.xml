@@ -75,7 +75,8 @@
                     android:id="@+id/label_EXIF_filename"
                     android:layout_column="1"
                     android:layout_weight="0.35"
-                    android:paddingBottom="5dp"/>
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -102,7 +103,8 @@
                     android:id="@+id/label_EXIF_width"
                     android:layout_column="1"
                     android:layout_weight="0.35"
-                    android:paddingBottom="5dp"/>
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -129,7 +131,8 @@
                     android:id="@+id/label_EXIF_height"
                     android:layout_column="1"
                     android:layout_weight="0.35"
-                    android:paddingBottom="5dp"/>
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -139,7 +142,8 @@
                     android:id="@+id/image_height"
                     android:layout_column="2"
                     android:layout_weight="0.65"
-                    android:paddingBottom="5dp"/>
+                    android:paddingBottom="5dp"
+                    android:paddingRight="10dp" />
             </TableRow>
 
             <!--Image Size on Disk Field-->
@@ -155,7 +159,8 @@
                     android:id="@+id/label_EXIF_size_bytes"
                     android:layout_column="1"
                     android:layout_weight="0.35"
-                    android:paddingBottom="5dp"/>
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -169,7 +174,7 @@
             </TableRow>
 
             <!--Image Date Taken-->
-            <TableRow>
+            <TableRow android:paddingLeft="10dp">
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -207,7 +212,8 @@
                     android:id="@+id/label_EXIF_camera"
                     android:layout_column="1"
                     android:layout_weight="0.35"
-                    android:paddingBottom="5dp"/>
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp" />
 
                 <EditText
                     android:layout_width="0dp"
@@ -217,7 +223,8 @@
                     android:id="@+id/image_camera"
                     android:layout_column="2"
                     android:layout_weight="0.65"
-                    android:paddingBottom="5dp"/>
+                    android:paddingBottom="5dp"
+                    android:paddingRight="10dp" />
             </TableRow>
 
             <!--Image Lens-->
@@ -233,7 +240,8 @@
                     android:id="@+id/label_EXIF_lens"
                     android:layout_column="1"
                     android:layout_weight="0.35"
-                    android:paddingBottom="5dp"/>
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp" />
 
                 <EditText
                     android:layout_width="0dp"
@@ -259,7 +267,8 @@
                     android:id="@+id/label_EXIF_exposure"
                     android:layout_column="1"
                     android:layout_weight="0.35"
-                    android:paddingBottom="5dp"/>
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp" />
 
                 <EditText
                     android:layout_width="0dp"
@@ -285,7 +294,8 @@
                     android:id="@+id/label_EXIF_flash"
                     android:layout_column="1"
                     android:layout_weight="0.35"
-                    android:paddingBottom="5dp"/>
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp" />
 
                 <EditText
                     android:layout_width="0dp"
@@ -311,7 +321,8 @@
                     android:id="@+id/label_EXIF_focal_length"
                     android:layout_column="1"
                     android:layout_weight="0.35"
-                    android:paddingBottom="5dp"/>
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp" />
 
                 <EditText
                     android:layout_width="0dp"
@@ -357,7 +368,8 @@
                     android:id="@+id/label_EXIF_latitude"
                     android:layout_column="1"
                     android:layout_weight="0.35"
-                    android:paddingBottom="5dp"/>
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -384,7 +396,8 @@
                     android:id="@+id/label_EXIF_longitude"
                     android:layout_column="1"
                     android:layout_weight="0.35"
-                    android:paddingBottom="5dp"/>
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -397,7 +410,6 @@
                     android:paddingBottom="5dp"/>
 
             </TableRow>
-
         </TableLayout>
     </ScrollView>
 </FrameLayout>
