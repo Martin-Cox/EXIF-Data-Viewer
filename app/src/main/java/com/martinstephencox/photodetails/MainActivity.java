@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
      * Adds a marker to the Google Maps fragment at the users selected images GPS coordinates
      */
     public void addMapMarker() {
-        if (iLat != null && iLon != null && iLatRef != null && iLonRef != null ) {
+        if (iLat != null && !iLat.equals("") && iLon != null && !iLon.equals("") && iLatRef != null && !iLatRef.equals("") && iLonRef != null && !iLonRef.equals("")) {
 
             if (iLatRef.equals("N")) {
                 //North of equator, positive value
