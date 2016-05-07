@@ -239,6 +239,30 @@ public class MainActivity extends AppCompatActivity {
             public void onMapClick(LatLng latLng) {
                 posMarker.setPosition(latLng);
                 displayCoordsInDegrees();
+
+                //Use text view values instead of posMarker values
+                iLat = toDMS(posMarker.getPosition().latitude);
+                iLon = toDMS(posMarker.getPosition().longitude);
+
+                if (posMarker.getPosition().latitude > 0) {
+                    //North of equator, positive value
+                    iLatFloat = toDegrees(iLat);
+                    iLatRef = "N";
+                } else {
+                    //South of equator, negative value
+                    iLatFloat = 0 - toDegrees(iLat);
+                    iLatRef = "S";
+                }
+
+                if (posMarker.getPosition().longitude > 0) {
+                    //East of prime meridian, positive value
+                    iLonFloat = toDegrees(iLon);
+                    iLonRef = "E";
+                } else {
+                    //West of prime meridian, negative value
+                    iLonFloat = 0 - toDegrees(iLon);
+                    iLonRef = "W";
+                }
             }
         });
     }
