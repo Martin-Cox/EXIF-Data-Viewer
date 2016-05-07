@@ -115,6 +115,30 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onPause() {
+        final MapView gMap = (MapView) findViewById(R.id.map);
+
+        GoogleMap gMapObj = gMap.getMap();
+
+        gMapObj.setMyLocationEnabled(false);
+
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        try {
+            final MapView gMap = (MapView) findViewById(R.id.map);
+
+            GoogleMap gMapObj = gMap.getMap();
+
+            gMapObj.setMyLocationEnabled(true);
+        } catch (NullPointerException e) {
+            //App loading for first time, gMapObj isn't created
+        }
+        super.onResume();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

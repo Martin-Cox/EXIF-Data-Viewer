@@ -80,16 +80,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         //gMapView.getMapAsync(this);
 
         return view;
-
-        /*gMap.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                View coordLayout = findViewById(R.id.main_content);
-                Snackbar successSnackbar = Snackbar.make(coordLayout, "Touched", Snackbar.LENGTH_SHORT);
-                successSnackbar.show();
-                return true;
-            }
-        });*/
     }
 
     @Override
