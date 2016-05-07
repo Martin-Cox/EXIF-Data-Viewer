@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     String iLonRef = "";
     Float iLatFloat = 0.0f;
     Float iLonFloat = 0.0f;
+    ExifInterface iEXIF = null;
 
     public enum populateMode {
         LOAD_IMAGE, REPOPULATE
@@ -133,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 drawImage();
 
                 iEXIFPath = getRealPathFromURI(this.getApplicationContext(), iURI);
-                exif = new ExifInterface(iEXIFPath);
+                iEXIF = new ExifInterface(iEXIFPath);
 
                 //Getting all the Exif attributes
                 String[] filepathComponents = iEXIFPath.split("/");
@@ -143,14 +144,14 @@ public class MainActivity extends AppCompatActivity {
                 iSize = image.length();
                 iSize = iSize/1024;
 
-                iWidth = exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
-                iHeight = exif.getAttribute(ExifInterface.TAG_IMAGE_LENGTH);
-                iLat = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
-                iLon = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
-                iLatRef = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
-                iLonRef = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
+                iWidth = iEXIF.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
+                iHeight = iEXIF.getAttribute(ExifInterface.TAG_IMAGE_LENGTH);
+                iLat = iEXIF.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+                iLon = iEXIF.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+                iLatRef = iEXIF.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
+                iLonRef = iEXIF.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
 
-                populateFields(exif, populateMode.LOAD_IMAGE);
+                populateFields(iEXIF, populateMode.LOAD_IMAGE);
 
                 iLatFloat = 0f;
                 iLonFloat = 0f;
@@ -365,12 +366,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean saveImage() {
         try {
             //Save the modified image
-            exif.setAttribute(ExifInterface.TAG_DATETIME, ((TextView) findViewById(R.id.image_date_taken)).getText().toString());
-            exif.setAttribute(ExifInterface.TAG_MAKE, ((TextView) findViewById(R.id.image_camera)).getText().toString());
-            exif.setAttribute(ExifInterface.TAG_APERTURE, ((TextView) findViewById(R.id.image_lens)).getText().toString());
-            exif.setAttribute(ExifInterface.TAG_EXPOSURE_TIME, ((TextView) findViewById(R.id.image_exposure)).getText().toString());
-            exif.setAttribute(ExifInterface.TAG_FLASH, ((TextView) findViewById(R.id.image_flash)).getText().toString());
-            exif.setAttribute(ExifInterface.TAG_FOCAL_LENGTH, ((TextView) findViewById(R.id.image_focal_length)).getText().toString());
+            iEXIF.setAttribute(ExifInterface.TAG_DATETIME, ((TextView) findViewById(R.id.image_date_taken)).getText().toString());
+            iEXIF.setAttribute(ExifInterface.TAG_MAKE, ((TextView) findViewById(R.id.image_camera)).getText().toString());
+            iEXIF.setAttribute(ExifInterface.TAG_APERTURE, ((TextView) findViewById(R.id.image_lens)).getText().toString());
+            iEXIF.setAttribute(ExifInterface.TAG_EXPOSURE_TIME, ((TextView) findViewById(R.id.image_exposure)).getText().toString());
+            iEXIF.setAttribute(ExifInterface.TAG_FLASH, ((TextView) findViewById(R.id.image_flash)).getText().toString());
+            iEXIF.setAttribute(ExifInterface.TAG_FOCAL_LENGTH, ((TextView) findViewById(R.id.image_focal_length)).getText().toString());
 
             if (posMarker != null) {
 
@@ -381,22 +382,22 @@ public class MainActivity extends AppCompatActivity {
                 String lat = toDMS(posMarker.getPosition().latitude);
                 String lon = toDMS(posMarker.getPosition().longitude);
 
-                exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, lat);
-                exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, lon);
+                iEXIF.setAttribute(ExifInterface.TAG_GPS_LATITUDE, lat);
+                iEXIF.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, lon);
 
                 if (posMarker.getPosition().latitude > 0) {
-                    exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "N");
+                    iEXIF.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "N");
                 } else {
-                    exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "S");
+                    iEXIF.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "S");
                 }
 
                 if (posMarker.getPosition().longitude > 0) {
-                    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "E");
+                    iEXIF.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "E");
                 } else {
-                    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "W");
+                    iEXIF.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "W");
                 }
             }
-            exif.saveAttributes();
+            iEXIF.saveAttributes();
             View coordLayout = findViewById(R.id.main_content);
             Snackbar successSnackbar = Snackbar.make(coordLayout, R.string.photo_save_success_text, Snackbar.LENGTH_SHORT);
             successSnackbar.show();
@@ -433,7 +434,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_save) {
 
-            if (this.exif == null) {
+            if (iEXIF == null) {
                 createErrorDialog(R.string.photo_save, R.string.photo_missing_image_error_text);
             } else {
                 boolean result = saveImage();
@@ -514,6 +515,12 @@ public class MainActivity extends AppCompatActivity {
         iLonRef = savedInstanceState.getString("LON_REF");
         iLatFloat = savedInstanceState.getFloat("LAT_FLOAT");
         iLonFloat = savedInstanceState.getFloat("LON_FLOAT");
+
+        try {
+            iEXIF = new ExifInterface(iEXIFPath);
+        } catch (Exception e) {
+
+        }
 
         drawImage();
         populateFields(null, populateMode.REPOPULATE);
