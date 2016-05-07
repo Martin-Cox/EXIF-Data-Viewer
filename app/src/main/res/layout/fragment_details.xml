@@ -174,7 +174,7 @@
             </TableRow>
 
             <!--Image Date Taken-->
-            <TableRow android:paddingLeft="10dp">
+            <TableRow android:paddingLeft="0dp">
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -186,7 +186,8 @@
                     android:id="@+id/label_EXIF_date_taken"
                     android:layout_column="1"
                     android:layout_weight="0.35"
-                    android:paddingBottom="5dp"/>
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp" />
 
                 <EditText
                     android:layout_width="0dp"
@@ -196,7 +197,8 @@
                     android:id="@+id/image_date_taken"
                     android:layout_column="2"
                     android:layout_weight="0.65"
-                    android:paddingBottom="5dp"/>
+                    android:paddingBottom="5dp"
+                    android:paddingRight="10dp" />
             </TableRow>
 
             <!--Image Camera-->
