@@ -10,10 +10,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -26,7 +28,9 @@ import android.view.MenuItem;
 import android.view.View;
 
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -51,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     Marker posMarker;
 
     /*Image details for restoring state e.g. on rotation*/
+    boolean selectedAnImage = false;
     Uri iURI = Uri.EMPTY;
     String iEXIFPath = "";
     String iFilename = "";
@@ -103,7 +108,21 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.select_photo_fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Uses intent to launch a photo selector
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, getString(R.string.photo_selector)), RESULT_PHOTO_OK);
+            }
+        });
+
+        ImageButton loadImage = (ImageButton) findViewById(R.id.loadImageButton);
+
+        loadImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Uses intent to launch a photo selector
@@ -144,13 +163,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             //Successfully selected an image, load it into ImageView using Glide
-
+            selectedAnImage = true;
             TableRow imageRow = (TableRow) findViewById(R.id.image_row);
             imageRow.setBackgroundColor(getResources().getColor(R.color.colorBlack));
             imageRow.setVisibility(View.VISIBLE);
             TableRow messageRow = (TableRow) findViewById(R.id.message_row);
             TableLayout table = (TableLayout) findViewById(R.id.layout_table);
-            table.removeView(messageRow);
+            table.setVisibility(View.VISIBLE);
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.select_photo_fab);
+            fab.setVisibility(View.VISIBLE);
+            AppBarLayout appbar = (AppBarLayout) findViewById(R.id.appbar);
+            appbar.setVisibility(View.VISIBLE);
+            ImageButton loadImage = (ImageButton) findViewById(R.id.loadImageButton);
+            loadImage.setVisibility(View.GONE);
             try {
 
                 iURI = data.getData();
@@ -587,6 +612,7 @@ public class MainActivity extends AppCompatActivity {
         savedInstanceState.putString("LON_REF", iLonRef);
         savedInstanceState.putFloat("LAT_FLOAT", iLatFloat);
         savedInstanceState.putFloat("LON_FLOAT", iLonFloat);
+        savedInstanceState.putBoolean("SELECTED_AN_IMAGE", selectedAnImage);
 
         //Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
@@ -610,11 +636,29 @@ public class MainActivity extends AppCompatActivity {
         iLonRef = savedInstanceState.getString("LON_REF");
         iLatFloat = savedInstanceState.getFloat("LAT_FLOAT");
         iLonFloat = savedInstanceState.getFloat("LON_FLOAT");
+        selectedAnImage = savedInstanceState.getBoolean("SELECTED_AN_IMAGE");
 
         try {
             iEXIF = new ExifInterface(iEXIFPath);
         } catch (Exception e) {
 
+        }
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.select_photo_fab);
+        ImageButton loadImage = (ImageButton) findViewById(R.id.loadImageButton);
+        AppBarLayout appbar = (AppBarLayout) findViewById(R.id.appbar);
+        TableLayout table = (TableLayout) findViewById(R.id.layout_table);
+
+        if (selectedAnImage == false) {
+            table.setVisibility(View.INVISIBLE);
+            fab.setVisibility(View.INVISIBLE);
+            loadImage.setVisibility(View.VISIBLE);
+            appbar.setVisibility(View.INVISIBLE);
+        } else {
+            table.setVisibility(View.VISIBLE);
+            fab.setVisibility(View.VISIBLE);
+            loadImage.setVisibility(View.GONE);
+            appbar.setVisibility(View.VISIBLE);
         }
 
         drawImage();

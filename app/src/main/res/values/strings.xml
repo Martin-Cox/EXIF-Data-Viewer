@@ -11,6 +11,9 @@
     <!--Photo tab-->
     <string name="photo_viewer_desc">Please select a photo!</string>
 
+    <!--Load Image Button-->
+    <string name="load_image">Select a photo</string>
+
     <!--Map tab-->
     <string name="map_position">Image Location</string>
 

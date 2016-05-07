@@ -20,7 +20,8 @@
             android:paddingBottom="75dp"
             android:measureWithLargestChild="false"
             android:stretchColumns="1"
-            android:id="@+id/layout_table">
+            android:id="@+id/layout_table"
+            android:visibility="gone">
 
             <!--Photo panel-->
             <TableRow android:id="@+id/message_row"></TableRow>
