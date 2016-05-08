@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton loadImage = (ImageButton) findViewById(R.id.loadImageButton);
+        ImageButton loadImage = (ImageButton) findViewById(R.id.load_image_button);
 
         loadImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,8 +174,10 @@ public class MainActivity extends AppCompatActivity {
             fab.setVisibility(View.VISIBLE);
             AppBarLayout appbar = (AppBarLayout) findViewById(R.id.appbar);
             appbar.setVisibility(View.VISIBLE);
-            ImageButton loadImage = (ImageButton) findViewById(R.id.loadImageButton);
+            ImageButton loadImage = (ImageButton) findViewById(R.id.load_image_button);
             loadImage.setVisibility(View.GONE);
+            TextView loadImageText = (TextView) findViewById(R.id.load_image_text);
+            loadImageText.setVisibility(View.GONE);
             try {
 
                 iURI = data.getData();
@@ -649,20 +651,23 @@ public class MainActivity extends AppCompatActivity {
         imageRow.setVisibility(View.VISIBLE);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.select_photo_fab);
-        ImageButton loadImage = (ImageButton) findViewById(R.id.loadImageButton);
+        ImageButton loadImageButton = (ImageButton) findViewById(R.id.load_image_button);
         AppBarLayout appbar = (AppBarLayout) findViewById(R.id.appbar);
         TableLayout table = (TableLayout) findViewById(R.id.layout_table);
+        TextView loadImageText = (TextView) findViewById(R.id.load_image_text);
 
         if (selectedAnImage == false) {
             table.setVisibility(View.INVISIBLE);
             fab.setVisibility(View.INVISIBLE);
-            loadImage.setVisibility(View.VISIBLE);
+            loadImageButton.setVisibility(View.VISIBLE);
             appbar.setVisibility(View.INVISIBLE);
+            loadImageText.setVisibility(View.VISIBLE);
         } else {
             table.setVisibility(View.VISIBLE);
             fab.setVisibility(View.VISIBLE);
-            loadImage.setVisibility(View.GONE);
+            loadImageButton.setVisibility(View.GONE);
             appbar.setVisibility(View.VISIBLE);
+            loadImageText.setVisibility(View.GONE);
         }
 
         drawImage();
