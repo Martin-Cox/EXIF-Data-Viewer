@@ -644,6 +644,10 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        TableRow imageRow = (TableRow) findViewById(R.id.image_row);
+        imageRow.setBackgroundColor(getResources().getColor(R.color.colorBlack));
+        imageRow.setVisibility(View.VISIBLE);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.select_photo_fab);
         ImageButton loadImage = (ImageButton) findViewById(R.id.loadImageButton);
         AppBarLayout appbar = (AppBarLayout) findViewById(R.id.appbar);
