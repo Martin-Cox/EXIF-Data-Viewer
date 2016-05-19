@@ -1,12 +1,7 @@
 package com.martinstephencox.photodetails;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-
-import org.junit.Before;
+import static net.java.quickcheck.generator.PrimitiveGeneratorsIterables.someLongs;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
 import static org.junit.Assert.*;
 
 /**
@@ -68,6 +63,21 @@ public class MainActivityTest {
         assertEquals(2048, ma.getImageSizeInKb(2097152l), 0.0);
         assertEquals(16384, ma.getImageSizeInKb(16777216l), 0.0);
     }
+
+    @Test
+    public void getImageSizeInKb_Quickcheck() throws Exception {
+        //Uses Quickcheck to generate a large number of longs ranging from Long.MIN_VALUE to Long.MAX_VALUE
+        //Each generated value is used to test the getImageSizeInKb(Long imageLength) method
+        for (Long val : someLongs()) {
+            Long valSize = val/1024;
+            if (valSize < 0) {
+                valSize = 0l;
+            }
+            assertEquals(valSize, ma.getImageSizeInKb(val));
+        }
+    }
+
+
 
     // getRealPathFromUri
 }
