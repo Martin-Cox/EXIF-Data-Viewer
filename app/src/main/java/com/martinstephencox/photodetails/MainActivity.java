@@ -192,8 +192,7 @@ public class MainActivity extends AppCompatActivity {
                 iFilename = filepathComponents[filepathComponents.length-1];
 
                 File image = new File(iEXIFPath);
-                iSize = image.length();
-                iSize = iSize/1024;
+                iSize = getImageSizeInKb(image.length());
 
                 iWidth = iEXIF.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
                 iHeight = iEXIF.getAttribute(ExifInterface.TAG_IMAGE_LENGTH);
@@ -217,6 +216,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             //Couldn't load the image, display an error message
             createErrorDialog(android.R.string.dialog_alert_title, R.string.photo_selector_error_text);
+        }
+    }
+
+    public Long getImageSizeInKb(Long imageLength) {
+        if (imageLength <= 0) {
+            return 0l;
+        } else {
+            return imageLength / 1024;
         }
     }
 
@@ -375,6 +382,10 @@ public class MainActivity extends AppCompatActivity {
     public Float toDegrees(String ref) {
         //EXIF data should is in DMS format, need to convert from DMS to degrees for Google Maps
         //Credit to http://android-er.blogspot.co.uk/2010/01/convert-exif-gps-info-to-degree-format.html
+
+        if (ref.equals(null) || ref.equals("")) {
+            return 0.0f;
+        }
 
         Float result = null;
         String[] DMS = ref.split(",", 3);
